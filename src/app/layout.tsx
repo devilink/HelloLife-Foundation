@@ -12,6 +12,8 @@ const inter = Inter({
 
 import { ClerkProvider } from "@clerk/nextjs";
 
+export const revalidate = 60;
+
 const BASE_URL = "https://www.hellolifefoundation.com";
 
 export const metadata: Metadata = {
