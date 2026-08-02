@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @default(USER)
+}
+
+enum Role {
+  USER
+  SUPER_ADMIN
+  FINANCE
+  VOLUNTEER_COORDINATOR
+  CONTENT_MANAGER
+}
+
+model Donation {
+  id            String   @id @default(cuid())
+  donorName     String
+  anonymous     Boolean  @default(false)
+  amount        Float
+  paymentDate   DateTime
+  paymentMethod String
+  transactionId String?
+  receiptUrl    String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdBy     String?  // Admin who added this
+}
+
+model DonationConfirmation {
+  id            String   @id @default(cuid())
+  fullName      String
+  phoneNumber   String
+  email         String?
+  amount        Float
+  paymentDate   DateTime
+  paymentMethod String
+  transactionId String
+  screenshotUrl String
+  message       String?
+  anonymous     Boolean  @default(false)
+  status        DonationStatus @default(PENDING)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum DonationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  title       String
+  category    String
+  description String?
+  amount      Float
+  date        DateTime
+  location    String?
+  receiptUrl  String?
+  approvedBy  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id          String         @id @default(cuid())
+  name        String
+  description String
+  goal        Float
+  location    String?
+  status      ProjectStatus  @default(ACTIVE)
+  images      ProjectImage[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+model ProjectImage {
+  id        String   @id @default(cuid())
+  url       String
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model HelpRequest {
+  id               String   @id @default(cuid())
+  fullName         String
+  phoneNumber      String
+  alternateContact String?
+  email            String?
+  district         String
+  village          String
+  address          String
+  pinCode          String
+  gpsLocation      String?
+  emergencyType    String
+  description      String
+  familyMembers    Int      @default(1)
+  children         Int      @default(0)
+  seniorCitizens   Int      @default(0)
+  disabledPersons  Int      @default(0)
+  urgency          Urgency  @default(MEDIUM)
+  status           HelpStatus @default(PENDING)
+  adminRemarks     String?
+  assignedTo       String?  // Volunteer ID
+  images           HelpRequestImage[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum Urgency {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum HelpStatus {
+  PENDING
+  UNDER_VERIFICATION
+  APPROVED
+  VOLUNTEER_ASSIGNED
+  HELP_DISPATCHED
+  COMPLETED
+  REJECTED
+}
+
+model HelpRequestImage {
+  id            String      @id @default(cuid())
+  url           String
+  helpRequestId String
+  helpRequest   HelpRequest @relation(fields: [helpRequestId], references: [id], onDelete: Cascade)
+}
+
+model Volunteer {
+  id             String   @id @default(cuid())
+  fullName       String
+  phoneNumber    String
+  email          String   @unique
+  district       String
+  vehicleType    String?
+  availability   String?
+  completedTasks Int      @default(0)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  type      String   // e.g. EMERGENCY, UPDATE
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Gallery {
+  id        String   @id @default(cuid())
+  title     String
+  category  String
+  url       String
+  type      String   @default("IMAGE") // IMAGE or VIDEO
+  createdAt DateTime @default(now())
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String   // e.g. Beneficiary, Donor, Volunteer
+  content   String
+  imageUrl  String?
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  createdAt DateTime @default(now())
+}
