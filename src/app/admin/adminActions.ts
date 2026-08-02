@@ -120,7 +120,7 @@ export async function updateProject(id: string, data: { name: string, descriptio
       expensesTotal: data.expensesTotal,
       supportersCount: data.supportersCount,
       location: data.location,
-    }
+    } as any
   });
 
   if (data.coverImage) {
@@ -245,7 +245,7 @@ export async function addExpense(data: { title: string, category: string, amount
       receiptUrl: data.receiptUrl,
       approvedBy: adminEmail,
       projectId: data.projectId || null
-    }
+    } as any
   });
 
   // If tied to a project, update the project's total expenses? The user wants admin to manage it manually, but we can do it auto here or let them update it via updateProject. We'll leave it to manual updateProject as per user request to "admin can operate crud operation".
@@ -277,7 +277,7 @@ export async function addGalleryImage(data: { title: string, category: string, u
       url: data.url,
       type: data.type || "IMAGE",
       projectId: data.projectId || null
-    }
+    } as any
   });
   revalidatePath("/admin/gallery");
   revalidatePath("/");
