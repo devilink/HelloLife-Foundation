@@ -7,18 +7,21 @@ import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export default function Navbar() {
+export default function Navbar({ navSettings = {} }: { navSettings?: Record<string, string> }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Projects", href: "/projects" },
-    { name: "Impact", href: "/gallery" },
-    { name: "Transparency", href: "/transparency" },
-    { name: "Need Help", href: "/request-help" },
-    { name: "Volunteer", href: "/volunteer" },
+  let navLinks = [
+    { name: "Home", href: "/", settingKey: "navHome" },
+    { name: "Projects", href: "/projects", settingKey: "navProjects" },
+    { name: "Impact", href: "/gallery", settingKey: "navImpact" },
+    { name: "Transparency", href: "/transparency", settingKey: "navTransparency" },
+    { name: "Need Help", href: "/request-help", settingKey: "navNeedHelp" },
+    { name: "Volunteer", href: "/volunteer", settingKey: "navVolunteer" },
   ];
+
+  // Filter links based on admin settings (default to true if not set)
+  navLinks = navLinks.filter(link => navSettings[link.settingKey] !== "false");
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-white border-b border-gray-200 shadow-sm py-4">

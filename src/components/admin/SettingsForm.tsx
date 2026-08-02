@@ -17,6 +17,12 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Rec
     peopleHelped: initialSettings.peopleHelped || "0",
     showTopDonors: initialSettings.showTopDonors || "true",
     showImpactInAction: initialSettings.showImpactInAction || "true",
+    navHome: initialSettings.navHome || "true",
+    navProjects: initialSettings.navProjects || "true",
+    navImpact: initialSettings.navImpact || "true",
+    navTransparency: initialSettings.navTransparency || "true",
+    navNeedHelp: initialSettings.navNeedHelp || "true",
+    navVolunteer: initialSettings.navVolunteer || "true",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -134,6 +140,32 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Rec
               <span className="text-sm font-medium text-foreground">Show Impact in Action on Homepage</span>
             </label>
             <p className="text-xs text-muted-foreground ml-8">Toggle whether the public can see the image gallery.</p>
+          </div>
+
+          <div className="col-span-1 md:col-span-2 pt-6 border-t border-border">
+            <h3 className="text-lg font-bold mb-4">Navigation Menu Visibility</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {[
+                { name: "navHome", label: "Home Link" },
+                { name: "navProjects", label: "Projects Link" },
+                { name: "navImpact", label: "Impact Link" },
+                { name: "navTransparency", label: "Transparency Link" },
+                { name: "navNeedHelp", label: "Need Help Link" },
+                { name: "navVolunteer", label: "Volunteer Link" },
+              ].map(link => (
+                <label key={link.name} className="flex items-center gap-3 cursor-pointer">
+                  <input 
+                    type="checkbox"
+                    name={link.name}
+                    checked={(settings as any)[link.name] === "true"}
+                    onChange={handleChange}
+                    className="w-5 h-5 text-primary border-border focus:ring-primary/50 rounded"
+                  />
+                  <span className="text-sm font-medium text-foreground">{link.label}</span>
+                </label>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-4">Toggle which links are visible in the top navigation bar.</p>
           </div>
 
           <div className="pt-6 flex justify-end col-span-1 md:col-span-2">

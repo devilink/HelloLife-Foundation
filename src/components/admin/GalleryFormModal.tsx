@@ -33,7 +33,7 @@ export default function GalleryFormModal({ onClose }: { onClose: () => void }) {
           const canvas = document.createElement("canvas");
           let width = img.width;
           let height = img.height;
-          const max_size = 1200;
+          const max_size = 800;
           
           if (width > height && width > max_size) {
             height *= max_size / width;
@@ -47,7 +47,7 @@ export default function GalleryFormModal({ onClose }: { onClose: () => void }) {
           canvas.height = height;
           const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, width, height);
-          setImageBase64(canvas.toDataURL("image/jpeg", 0.7));
+          setImageBase64(canvas.toDataURL("image/jpeg", 0.6));
         };
         img.src = reader.result as string;
       };

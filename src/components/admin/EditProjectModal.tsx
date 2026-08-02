@@ -43,7 +43,7 @@ export default function EditProjectModal({
               const canvas = document.createElement("canvas");
               let width = img.width;
               let height = img.height;
-              const max_size = 1200;
+              const max_size = 800;
               
               if (width > height && width > max_size) {
                 height *= max_size / width;
@@ -57,7 +57,7 @@ export default function EditProjectModal({
               canvas.height = height;
               const ctx = canvas.getContext("2d");
               ctx?.drawImage(img, 0, 0, width, height);
-              resolve(canvas.toDataURL("image/jpeg", 0.7)); // compress to 70% quality jpeg
+              resolve(canvas.toDataURL("image/jpeg", 0.6)); // compress to 70% quality jpeg
             };
             img.src = reader.result as string;
           };
