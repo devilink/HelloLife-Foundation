@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { updateProject } from "@/app/admin/adminActions";
-import { X, Loader2, Upload } from "lucide-react";
+import { updateProject, deleteProjectImage } from "@/app/admin/adminActions";
+import { X, Loader2, Upload, Trash2 } from "lucide-react";
 
 export default function EditProjectModal({ 
   project, 
@@ -13,6 +13,8 @@ export default function EditProjectModal({
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagesBase64, setImagesBase64] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<any[]>(project.images || []);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     name: project.name || "",
@@ -66,6 +68,20 @@ export default function EditProjectModal({
       Promise.all(promises).then(results => {
         setImagesBase64(results);
       });
+    }
+  };
+
+  const handleDeleteImage = async (imageId: string) => {
+    if (!confirm("Delete this image?")) return;
+    setDeletingImageId(imageId);
+    try {
+      await deleteProjectImage(imageId, project.id);
+      setExistingImages(prev => prev.filter(img => img.id !== imageId));
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete image");
+    } finally {
+      setDeletingImageId(null);
     }
   };
 
@@ -145,6 +161,34 @@ export default function EditProjectModal({
             <textarea required rows={4} name="description" value={formData.description} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50 resize-none" />
           </div>
 
+          {/* Existing Images */}
+          {existingImages.length > 0 && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Current Images ({existingImages.length})</label>
+              <div className="grid grid-cols-4 gap-3">
+                {existingImages.map((img: any) => (
+                  <div key={img.id} className="relative group rounded-xl overflow-hidden border border-border bg-muted/30 aspect-square">
+                    <img src={img.url} alt="Project image" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImage(img.id)}
+                      disabled={deletingImageId === img.id}
+                      className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-50"
+                      title="Delete image"
+                    >
+                      {deletingImageId === img.id ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Upload New Images */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Add More Images (Optional)</label>
             <div className="mt-1 border-2 border-dashed border-border rounded-xl p-6 hover:bg-muted/30 transition-colors flex flex-col items-center justify-center relative overflow-hidden">

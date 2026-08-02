@@ -177,6 +177,7 @@ export async function updateProject(id: string, data: { name: string, descriptio
     safeRevalidate("/admin/projects");
     safeRevalidate("/projects");
     safeRevalidate(`/projects/${id}`);
+    safeRevalidate("/");
     return { success: true };
   } catch (error: any) {
     console.error("updateProject error:", error);
@@ -193,9 +194,28 @@ export async function updateProjectStatus(id: string, status: any) {
     });
     safeRevalidate("/admin/projects");
     safeRevalidate("/projects");
+    safeRevalidate(`/projects/${id}`);
+    safeRevalidate("/");
     return { success: true };
   } catch (error: any) {
     console.error("updateProjectStatus error:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteProjectImage(imageId: string, projectId: string) {
+  try {
+    await requireAdmin();
+    await prisma.projectImage.delete({
+      where: { id: imageId }
+    });
+    safeRevalidate("/admin/projects");
+    safeRevalidate("/projects");
+    safeRevalidate(`/projects/${projectId}`);
+    safeRevalidate("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("deleteProjectImage error:", error);
     return { success: false, error: error.message };
   }
 }
@@ -208,6 +228,7 @@ export async function deleteProject(id: string) {
     });
     safeRevalidate("/admin/projects");
     safeRevalidate("/projects");
+    safeRevalidate("/");
     return { success: true };
   } catch (error: any) {
     console.error("deleteProject error:", error);

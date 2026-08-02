@@ -12,6 +12,7 @@ export default async function AdminProjectsPage() {
     projects = await prisma.project.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
+        images: true,
         _count: {
           select: { images: true }
         }
