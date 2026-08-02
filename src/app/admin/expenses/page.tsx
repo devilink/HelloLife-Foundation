@@ -3,8 +3,10 @@ import ExpensesClientHeader from "./ExpensesClientHeader";
 import DeleteAction from "@/components/admin/DeleteAction";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminExpensesPage() {
-  const expenses = await prisma.expense.findMany({
+  const expenses = await (prisma.expense as any).findMany({
     orderBy: { date: 'desc' },
     include: { project: true }
   });
@@ -42,7 +44,7 @@ export default async function AdminExpensesPage() {
                   </td>
                 </tr>
               ) : (
-                expenses.map((expense) => (
+                expenses.map((expense: any) => (
                   <tr key={expense.id} className="hover:bg-muted/20 transition-colors">
                     <td className="p-4 text-sm font-mono text-muted-foreground">{expense.id}</td>
                     <td className="p-4 font-medium">{expense.title}</td>
@@ -52,7 +54,7 @@ export default async function AdminExpensesPage() {
                       </span>
                     </td>
                     <td className="p-4 text-sm text-muted-foreground truncate max-w-[150px]">
-                      {expense.project?.name || "General"}
+                      {(expense as any).project?.name || "General"}
                     </td>
                     <td className="p-4 font-bold text-rose-600 dark:text-rose-400">
                       ₹{expense.amount.toLocaleString()}

@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminReportsPage() {
   const [totalDonations, totalExpenses, totalVolunteers, activeProjects] = await Promise.all([
     prisma.donation.aggregate({ _sum: { amount: true }, _count: true }),

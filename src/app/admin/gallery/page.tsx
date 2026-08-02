@@ -3,6 +3,8 @@ import GalleryClientHeader from "./GalleryClientHeader";
 import DeleteAction from "@/components/admin/DeleteAction";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminGalleryPage() {
   const images = await prisma.gallery.findMany({
     orderBy: { createdAt: 'desc' }
@@ -47,7 +49,7 @@ export default async function AdminGalleryPage() {
                       </span>
                     </td>
                     <td className="p-4 text-sm text-muted-foreground">
-                      {img.projectId ? "Yes" : "General"}
+                      {(img as any).projectId ? "Yes" : "General"}
                     </td>
                     <td className="p-4 text-sm text-muted-foreground">
                       {img.createdAt.toISOString().split("T")[0]}

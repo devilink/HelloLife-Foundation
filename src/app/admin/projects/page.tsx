@@ -4,6 +4,8 @@ import ProjectStatusToggle from "@/components/admin/ProjectStatusToggle";
 import DeleteAction from "@/components/admin/DeleteAction";
 import EditProjectAction from "@/components/admin/EditProjectAction";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminProjectsPage() {
   const projects = await prisma.project.findMany({
     orderBy: { createdAt: 'desc' },

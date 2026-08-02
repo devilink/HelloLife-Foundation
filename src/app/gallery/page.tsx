@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: "View the impact of your donations through photos and videos of our relief operations.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function GalleryPage() {
   const galleryItems = await prisma.gallery.findMany({
     orderBy: { createdAt: "desc" },

@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import VolunteersClientHeader from "./VolunteersClientHeader";
 import VolunteerActions from "./VolunteerActions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminVolunteersPage() {
   const volunteers = await prisma.volunteer.findMany({
     orderBy: { createdAt: 'desc' }

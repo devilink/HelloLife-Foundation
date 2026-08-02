@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import RequestStatusDropdown from "@/components/admin/RequestStatusDropdown";
 import DeleteAction from "@/components/admin/DeleteAction";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminRequestsPage() {
   const requests = await prisma.helpRequest.findMany({
     orderBy: { createdAt: 'desc' }

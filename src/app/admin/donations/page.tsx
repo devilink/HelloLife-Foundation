@@ -4,6 +4,8 @@ import VerifyDonationAction from "@/components/admin/VerifyDonationAction";
 import Link from "next/link";
 import DonationActions from "./DonationActions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDonationsPage() {
   const [donations, pendingConfirmations] = await Promise.all([
     prisma.donation.findMany({ orderBy: { createdAt: 'desc' } }),
