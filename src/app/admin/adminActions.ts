@@ -117,7 +117,7 @@ export async function deleteHelpRequest(id: string) {
 
 // ----------------- PROJECTS -----------------
 
-export async function createProject(data: { name: string, description: string, goal: number, location: string, coverImage: string }) {
+export async function createProject(data: { name: string, description: string, goal: number, location: string, status?: string, images?: string[] }) {
   try {
     await requireAdmin();
     const project = await prisma.project.create({
@@ -126,16 +126,16 @@ export async function createProject(data: { name: string, description: string, g
         description: data.description,
         goal: data.goal,
         location: data.location,
-        status: "ACTIVE",
+        status: (data.status || "ACTIVE") as any,
       }
     });
 
-    if (data.coverImage) {
-      await prisma.projectImage.create({
-        data: {
-          url: data.coverImage,
+    if (data.images && data.images.length > 0) {
+      await prisma.projectImage.createMany({
+        data: data.images.map(img => ({
+          url: img,
           projectId: project.id
-        }
+        }))
       });
     }
 
@@ -148,7 +148,7 @@ export async function createProject(data: { name: string, description: string, g
   }
 }
 
-export async function updateProject(id: string, data: { name: string, description: string, goal: number, raised: number, expensesTotal: number, supportersCount: number, location: string, coverImage?: string }) {
+export async function updateProject(id: string, data: { name: string, description: string, goal: number, raised: number, expensesTotal: number, supportersCount: number, location: string, status?: string, images?: string[] }) {
   try {
     await requireAdmin();
     await prisma.project.update({
@@ -161,15 +161,16 @@ export async function updateProject(id: string, data: { name: string, descriptio
         expensesTotal: data.expensesTotal,
         supportersCount: data.supportersCount,
         location: data.location,
+        ...(data.status && { status: data.status }),
       } as any
     });
 
-    if (data.coverImage) {
-      await prisma.projectImage.create({
-        data: {
-          url: data.coverImage,
+    if (data.images && data.images.length > 0) {
+      await prisma.projectImage.createMany({
+        data: data.images.map(img => ({
+          url: img,
           projectId: id
-        }
+        }))
       });
     }
 

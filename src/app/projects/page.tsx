@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Explore our ongoing operations and relief projects. See where your donations are making an impact.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function ProjectsPage() {
   let projects: any[] = [];

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "View our financial summary and searchable expense ledger. 100% transparent operations.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function TransparencyPage() {
   let expenses: any[] = [];

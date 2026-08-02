@@ -7,10 +7,10 @@ export const metadata: Metadata = {
   description: "View the impact of your donations through photos and videos of our relief operations.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function GalleryPage() {
-  let galleryItems = [];
+  let galleryItems: any[] = [];
   try {
     galleryItems = await prisma.gallery.findMany({
       orderBy: { createdAt: "desc" },

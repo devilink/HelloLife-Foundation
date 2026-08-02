@@ -12,7 +12,7 @@ export default function EditProjectModal({
   onClose: () => void; 
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [coverImageBase64, setCoverImageBase64] = useState<string>("");
+  const [imagesBase64, setImagesBase64] = useState<string[]>([]);
   
   const [formData, setFormData] = useState({
     name: project.name || "",
@@ -21,21 +21,28 @@ export default function EditProjectModal({
     raised: project.raised?.toString() || "0",
     expensesTotal: project.expensesTotal?.toString() || "0",
     supportersCount: project.supportersCount?.toString() || "0",
-    location: project.location || ""
+    location: project.location || "",
+    status: project.status || "ACTIVE"
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCoverImageBase64(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      const promises = files.map(file => {
+        return new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(file);
+        });
+      });
+      
+      Promise.all(promises).then(results => {
+        setImagesBase64(results);
+      });
     }
   };
 
@@ -49,7 +56,7 @@ export default function EditProjectModal({
         raised: parseFloat(formData.raised),
         expensesTotal: parseFloat(formData.expensesTotal),
         supportersCount: parseInt(formData.supportersCount),
-        coverImage: coverImageBase64 || undefined
+        images: imagesBase64
       });
       onClose();
     } catch (error) {
@@ -65,7 +72,7 @@ export default function EditProjectModal({
       <div className="bg-card w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="flex justify-between items-center p-6 border-b border-border">
           <h2 className="text-xl font-bold">Edit Project</h2>
-          <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
+          <button type="button" onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -87,7 +94,7 @@ export default function EditProjectModal({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Amount Raised (₹)</label>
               <input type="number" name="raised" value={formData.raised} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50" />
@@ -95,6 +102,13 @@ export default function EditProjectModal({
             <div className="space-y-2">
               <label className="text-sm font-medium">Total Expenses (₹)</label>
               <input type="number" name="expensesTotal" value={formData.expensesTotal} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Status</label>
+              <select name="status" value={formData.status} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50">
+                <option value="ACTIVE">Active</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
             </div>
           </div>
           
@@ -109,24 +123,25 @@ export default function EditProjectModal({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Update Cover Image (Optional)</label>
+            <label className="text-sm font-medium">Add More Images (Optional)</label>
             <div className="mt-1 border-2 border-dashed border-border rounded-xl p-6 hover:bg-muted/30 transition-colors flex flex-col items-center justify-center relative overflow-hidden">
               <input 
                 type="file" 
                 accept="image/*" 
+                multiple
                 onChange={handleFileChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
-              {coverImageBase64 ? (
+              {imagesBase64.length > 0 ? (
                 <div className="text-center">
-                  <p className="text-sm text-primary font-medium">New image selected</p>
+                  <p className="text-sm text-primary font-medium">{imagesBase64.length} new images selected</p>
                   <p className="text-xs text-muted-foreground mt-1">Click to change</p>
                 </div>
               ) : (
                 <div className="text-center pointer-events-none">
                   <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-3" />
-                  <p className="text-sm font-medium text-foreground">Click to upload new cover image</p>
-                  <p className="text-xs text-muted-foreground mt-1">Leave empty to keep current image</p>
+                  <p className="text-sm font-medium text-foreground">Click to upload new images</p>
+                  <p className="text-xs text-muted-foreground mt-1">Select multiple JPEG, PNG files</p>
                 </div>
               )}
             </div>
