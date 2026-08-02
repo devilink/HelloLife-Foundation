@@ -5,12 +5,18 @@ import Link from "next/link";
 
 export default async function AdminExpensesPage() {
   const expenses = await prisma.expense.findMany({
-    orderBy: { date: 'desc' }
+    orderBy: { date: 'desc' },
+    include: { project: true }
+  });
+
+  const projects = await prisma.project.findMany({
+    where: { status: 'ACTIVE' },
+    select: { id: true, name: true }
   });
 
   return (
     <div className="space-y-6">
-      <ExpensesClientHeader />
+      <ExpensesClientHeader projects={projects} />
       
       <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
@@ -20,6 +26,7 @@ export default async function AdminExpensesPage() {
                 <th className="p-4 font-medium whitespace-nowrap">ID</th>
                 <th className="p-4 font-medium whitespace-nowrap">Title</th>
                 <th className="p-4 font-medium whitespace-nowrap">Category</th>
+                <th className="p-4 font-medium whitespace-nowrap">Project</th>
                 <th className="p-4 font-medium whitespace-nowrap">Amount</th>
                 <th className="p-4 font-medium whitespace-nowrap">Date</th>
                 <th className="p-4 font-medium whitespace-nowrap">Location</th>
@@ -30,7 +37,7 @@ export default async function AdminExpensesPage() {
             <tbody className="divide-y divide-border">
               {expenses.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-muted-foreground">
+                  <td colSpan={9} className="p-8 text-center text-muted-foreground">
                     No expenses found.
                   </td>
                 </tr>
@@ -43,6 +50,9 @@ export default async function AdminExpensesPage() {
                       <span className="px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium border border-border">
                         {expense.category}
                       </span>
+                    </td>
+                    <td className="p-4 text-sm text-muted-foreground truncate max-w-[150px]">
+                      {expense.project?.name || "General"}
                     </td>
                     <td className="p-4 font-bold text-rose-600 dark:text-rose-400">
                       ₹{expense.amount.toLocaleString()}

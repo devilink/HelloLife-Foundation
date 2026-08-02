@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import ActiveProjects from "@/components/home/ActiveProjects";
+import ProjectListClient from "@/components/projects/ProjectListClient";
 
 export const metadata: Metadata = {
   title: "Active Relief Projects | Hello Life Foundation",
@@ -27,23 +27,19 @@ export default async function ProjectsPage() {
   }));
 
   return (
-    <main className="min-h-screen">
-      <div className="bg-primary/5 py-12 border-b border-border">
+    <main className="min-h-screen bg-muted/20 pb-24">
+      <div className="bg-background pt-32 pb-16 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">Our Missions</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            These are our current active relief operations on the ground.
+          <h1 className="text-5xl font-extrabold mb-6 tracking-tight">Our Missions</h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            These are our current active relief operations on the ground. Use the filters to find specific initiatives.
           </p>
         </div>
       </div>
       
-      {formattedProjects.length > 0 ? (
-        <ActiveProjects projects={formattedProjects} hideViewAll={true} />
-      ) : (
-        <div className="py-24 text-center text-muted-foreground">
-          <p className="text-xl">No active projects at the moment.</p>
-        </div>
-      )}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <ProjectListClient initialProjects={formattedProjects} />
+      </div>
     </main>
   );
 }

@@ -2,46 +2,31 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Transparency", href: "/transparency" },
     { name: "Projects", href: "/projects" },
+    { name: "Impact", href: "/gallery" },
+    { name: "Transparency", href: "/transparency" },
+    { name: "Need Help", href: "/request-help" },
     { name: "Volunteer", href: "/volunteer" },
-    { name: "Request Help", href: "/request-help" },
-    { name: "Gallery", href: "/gallery" },
   ];
 
   return (
-    <nav
-      className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300 border-b",
-        scrolled
-          ? "bg-background/80 backdrop-blur-md border-border shadow-sm py-3"
-          : "bg-background/50 backdrop-blur-sm border-transparent py-5"
-      )}
-    >
+    <nav className="fixed top-0 w-full z-50 bg-white border-b border-gray-200 shadow-sm py-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/logo.svg" alt="Hello Life Foundation Logo" width={180} height={48} className="h-10 w-auto" />
+            <Image src="/logoss.png" alt="Hello Life Foundation Logo" width={48} height={48} className="h-10 w-auto" />
+            <span className="font-extrabold text-xl tracking-tight text-gray-900">Hellolife Foundation</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -52,27 +37,35 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    pathname === link.href ? "text-primary font-semibold" : "text-foreground/80"
+                    "text-sm font-medium transition-colors hover:text-emerald-600",
+                    pathname === link.href ? "text-emerald-600 font-semibold" : "text-gray-600"
                   )}
                 >
                   {link.name}
                 </Link>
               ))}
             </div>
-            <Link
-              href="/donate"
-              className="px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity shadow-md shadow-primary/20"
-            >
-              Donate Now
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/admin"
+                className="text-sm font-medium text-gray-500 hover:text-emerald-600 transition-colors"
+              >
+                Admin
+              </Link>
+              <Link
+                href="/donate"
+                className="px-6 py-2.5 rounded-2xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/25"
+              >
+                Donate Now
+              </Link>
+            </div>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-foreground focus:outline-none"
+              className="text-gray-700 focus:outline-none"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -82,7 +75,7 @@ export default function Navbar() {
 
       {/* Mobile Nav */}
       {isOpen && (
-        <div className="md:hidden bg-background border-b border-border shadow-lg absolute w-full">
+        <div className="md:hidden bg-white border-b border-gray-200 shadow-lg absolute w-full">
           <div className="px-4 pt-2 pb-6 space-y-1">
             {navLinks.map((link) => (
               <Link
@@ -92,20 +85,29 @@ export default function Navbar() {
                 className={cn(
                   "block px-3 py-3 rounded-md text-base font-medium",
                   pathname === link.href
-                    ? "bg-primary/10 text-primary"
-                    : "text-foreground/80 hover:bg-muted hover:text-foreground"
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 )}
               >
                 {link.name}
               </Link>
             ))}
-            <Link
-              href="/donate"
-              onClick={() => setIsOpen(false)}
-              className="block mt-4 px-3 py-3 text-center rounded-md bg-primary text-primary-foreground font-medium"
-            >
-              Donate Now
-            </Link>
+            <div className="flex flex-col gap-3 mt-6">
+              <Link
+                href="/admin"
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-3 text-center rounded-2xl border border-gray-200 text-gray-700 font-medium"
+              >
+                Admin Panel
+              </Link>
+              <Link
+                href="/donate"
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-3 text-center rounded-2xl bg-emerald-600 text-white font-semibold shadow-lg shadow-emerald-600/25"
+              >
+                Donate Now
+              </Link>
+            </div>
           </div>
         </div>
       )}

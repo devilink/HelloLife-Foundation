@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
-import { LayoutDashboard, Heart, CreditCard, FolderOpen, AlertCircle, Users, FileText, Menu, X, ShieldCheck, Settings } from "lucide-react";
+import { LayoutDashboard, Heart, CreditCard, FolderOpen, AlertCircle, Users, FileText, Menu, X, ShieldCheck, Settings, Image } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {
@@ -16,6 +16,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
     { name: "Donations", href: "/admin/donations", icon: Heart },
     { name: "Expenses", href: "/admin/expenses", icon: CreditCard },
     { name: "Projects", href: "/admin/projects", icon: FolderOpen },
+    { name: "Gallery", href: "/admin/gallery", icon: Image },
     { name: "Help Requests", href: "/admin/requests", icon: AlertCircle },
     { name: "Volunteers", href: "/admin/volunteers", icon: Users },
     { name: "Reports", href: "/admin/reports", icon: FileText },

@@ -1,6 +1,9 @@
 import HeroSection from "@/components/home/HeroSection";
 import TransparencyStats from "@/components/home/TransparencyStats";
 import ActiveProjects from "@/components/home/ActiveProjects";
+import SupportSection from "@/components/home/SupportSection";
+import ImpactGallery from "@/components/home/ImpactGallery";
+import TopDonors from "@/components/home/TopDonors";
 import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
@@ -10,7 +13,8 @@ export default async function Home() {
     activeProjectsCount,
     completedProjectsCount,
     pendingRequestsCount,
-    projects
+    projects,
+    galleries
   ] = await Promise.all([
     prisma.setting.findMany(),
     prisma.project.count({ where: { status: "ACTIVE" } }),
@@ -21,7 +25,8 @@ export default async function Home() {
       take: 3,
       orderBy: { createdAt: "desc" },
       include: { images: { take: 1 } }
-    })
+    }),
+    (prisma.gallery as any).findMany({ where: { projectId: null }, orderBy: { createdAt: "desc" }, take: 8 })
   ]);
 
   const settingsMap = dbSettings.reduce((acc, s) => {
@@ -35,6 +40,7 @@ export default async function Home() {
     remainingBalance: settingsMap.remainingBalance || "0",
     activeProjects: activeProjectsCount,
     completedProjects: completedProjectsCount,
+    peopleHelped: settingsMap.peopleHelped || "0",
     familiesHelped: settingsMap.familiesHelped || "0",
     volunteers: settingsMap.totalVolunteers || "0",
     pendingRequests: pendingRequestsCount,
@@ -47,7 +53,7 @@ export default async function Home() {
     description: p.description,
     district: p.location || "Various",
     goal: p.goal,
-    raised: 0, // In a full app, this would aggregate donations per project
+    raised: (p as any).raised || 0, // Fallback if raised is null, but we just added it to the DB schema
     coverImage: p.images[0]?.url || "/hero-bg.jpg",
     status: p.status,
   }));
@@ -57,6 +63,13 @@ export default async function Home() {
       <HeroSection />
       <TransparencyStats stats={stats} />
       <ActiveProjects projects={formattedProjects} />
+      {settingsMap.showTopDonors !== "false" && <TopDonors />}
+      <SupportSection />
+
+      {/* Impact in Action (Conditional) */}
+      {settingsMap.showImpactInAction !== "false" && (
+        <ImpactGallery galleryImages={galleries} />
+      )}
     </>
   );
 }

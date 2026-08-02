@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Trash2, Loader2 } from "lucide-react";
-import { deleteHelpRequest, deleteProject, deleteExpense } from "@/app/admin/adminActions";
+import { deleteHelpRequest, deleteProject, deleteExpense, deleteGalleryImage, deleteVolunteer, deleteDonationLedgerEntry } from "@/app/admin/adminActions";
 
-export default function DeleteAction({ id, entity }: { id: string, entity: "request" | "project" | "expense" }) {
+export default function DeleteAction({ id, entity }: { id: string, entity: "request" | "project" | "expense" | "galleryImage" | "volunteer" | "donationLedgerEntry" }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -15,6 +15,9 @@ export default function DeleteAction({ id, entity }: { id: string, entity: "requ
       if (entity === "request") await deleteHelpRequest(id);
       if (entity === "project") await deleteProject(id);
       if (entity === "expense") await deleteExpense(id);
+      if (entity === "galleryImage") await deleteGalleryImage(id);
+      if (entity === "volunteer") await deleteVolunteer(id);
+      if (entity === "donationLedgerEntry") await deleteDonationLedgerEntry(id);
     } catch (error) {
       console.error(error);
       alert("Failed to delete.");

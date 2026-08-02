@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import ProjectsClientHeader from "./ProjectsClientHeader";
 import ProjectStatusToggle from "@/components/admin/ProjectStatusToggle";
 import DeleteAction from "@/components/admin/DeleteAction";
+import EditProjectAction from "@/components/admin/EditProjectAction";
 
 export default async function AdminProjectsPage() {
   const projects = await prisma.project.findMany({
@@ -51,7 +52,8 @@ export default async function AdminProjectsPage() {
                     <td className="p-4 text-sm text-muted-foreground">
                       {project._count.images} images
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="p-4 text-right flex justify-end gap-2">
+                      <EditProjectAction project={project} />
                       <DeleteAction id={project.id} entity="project" />
                     </td>
                   </tr>

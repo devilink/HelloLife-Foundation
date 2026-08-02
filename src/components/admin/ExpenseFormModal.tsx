@@ -5,7 +5,7 @@ import { addExpense } from "@/app/admin/adminActions";
 import { X, Loader2, Upload } from "lucide-react";
 import Image from "next/image";
 
-export default function ExpenseFormModal({ onClose }: { onClose: () => void }) {
+export default function ExpenseFormModal({ onClose, projects = [] }: { onClose: () => void, projects?: { id: string; name: string }[] }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [receiptBase64, setReceiptBase64] = useState<string>("");
   
@@ -16,6 +16,7 @@ export default function ExpenseFormModal({ onClose }: { onClose: () => void }) {
     date: new Date().toISOString().split("T")[0],
     location: "",
     description: "",
+    projectId: "",
   });
 
   const categories = ["Medical", "Food", "Rescue", "Shelter", "Logistics", "Other"];
@@ -42,6 +43,7 @@ export default function ExpenseFormModal({ onClose }: { onClose: () => void }) {
       await addExpense({
         ...formData,
         amount: parseFloat(formData.amount),
+        projectId: formData.projectId || undefined,
         receiptUrl: receiptBase64 // Storing the receipt as a Base64 string in the DB
       });
       onClose();
@@ -80,6 +82,14 @@ export default function ExpenseFormModal({ onClose }: { onClose: () => void }) {
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Project (Optional)</label>
+            <select name="projectId" value={formData.projectId} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50">
+              <option value="">General Expense (No Project)</option>
+              {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

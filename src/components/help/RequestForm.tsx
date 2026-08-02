@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, UploadCloud, MapPin, ChevronRight, ChevronLeft, HeartPulse, Home, Utensils, ShieldAlert, Tent, Phone, User, FileText, X } from "lucide-react";
+import { CheckCircle2, UploadCloud, HeartPulse, Utensils, ShieldAlert, Tent, Home, X } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { submitHelpRequest } from "@/app/actions";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 
 const categories = [
   { id: "FOOD", name: "Food & Water", icon: Utensils },
@@ -38,13 +37,12 @@ const formSchema = z.object({
 });
 
 export default function RequestForm() {
-  const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestId, setRequestId] = useState<string | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { register, handleSubmit, formState: { errors }, watch, setValue, trigger } = useForm<z.infer<typeof formSchema>>({
+  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       category: "",
@@ -56,16 +54,6 @@ export default function RequestForm() {
   });
 
   const selectedCategory = watch("category");
-
-  const handleNextStep = async () => {
-    let fieldsToValidate: any[] = [];
-    if (step === 1) fieldsToValidate = ["category"];
-    if (step === 2) fieldsToValidate = ["fullName", "phoneNumber", "alternateContact", "familyMembers", "children", "seniorCitizens"];
-    if (step === 3) fieldsToValidate = ["district", "village", "address", "pinCode"];
-
-    const isStepValid = await trigger(fieldsToValidate);
-    if (isStepValid) setStep((s) => s + 1);
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -124,28 +112,28 @@ export default function RequestForm() {
 
   if (requestId) {
     return (
-      <div className="max-w-2xl mx-auto py-16">
+      <div className="max-w-2xl mx-auto py-24 px-4">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-card border border-border rounded-3xl p-10 text-center shadow-lg"
+          className="bg-card border border-border rounded-[2.5rem] p-12 text-center shadow-xl shadow-black/5"
         >
-          <div className="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-8">
-            <CheckCircle2 className="h-12 w-12 text-emerald-500" />
+          <div className="w-28 h-28 bg-emerald-500/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
+            <CheckCircle2 className="h-14 w-14 text-emerald-500" />
           </div>
-          <h2 className="text-3xl font-bold mb-4">Request Submitted</h2>
-          <p className="text-muted-foreground mb-8 text-lg">
-            Your request for help has been registered in our system. Our volunteer coordination team is reviewing it.
+          <h2 className="text-4xl font-extrabold mb-4 text-foreground tracking-tight">Request Submitted</h2>
+          <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
+            Your request for help has been registered in our system. Our volunteer coordination team is reviewing it immediately.
           </p>
           
-          <div className="bg-muted p-6 rounded-2xl mb-8 border border-border">
-            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2">Your Request ID</p>
-            <p className="text-4xl font-mono font-bold text-primary tracking-widest">{requestId}</p>
+          <div className="bg-muted/50 p-8 rounded-2xl mb-10 border border-border">
+            <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-3">Your Request ID</p>
+            <p className="text-4xl font-mono font-black text-primary tracking-widest">{requestId}</p>
           </div>
 
           <Link 
             href="/" 
-            className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-md shadow-primary/20 flex items-center justify-center"
+            className="w-full py-5 bg-secondary text-secondary-foreground font-bold text-lg rounded-2xl hover:opacity-90 transition-all shadow-lg shadow-secondary/20 flex items-center justify-center"
           >
             Return to Homepage
           </Link>
@@ -154,291 +142,212 @@ export default function RequestForm() {
     );
   }
 
+  const inputClass = "w-full px-5 py-4 rounded-2xl border border-border bg-background/50 focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-base outline-none font-medium";
+
   return (
-    <div className="max-w-3xl mx-auto py-12 px-4">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold mb-4">Need Help?</h1>
-        <p className="text-lg text-muted-foreground">
+    <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-12">
+        <h1 className="text-5xl font-extrabold mb-4 tracking-tight text-foreground">Request Assistance</h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           Fill out this form to request emergency relief, medical aid, or shelter. We will dispatch assistance as soon as possible.
         </p>
       </div>
 
-      <div className="mb-8">
-        <div className="flex justify-between items-center max-w-md mx-auto relative">
-          <div className="absolute top-1/2 left-0 w-full h-1 bg-muted -z-10 -translate-y-1/2 rounded-full"></div>
-          <div className="absolute top-1/2 left-0 h-1 bg-primary -z-10 -translate-y-1/2 rounded-full transition-all duration-500" style={{ width: `${((step - 1) / 3) * 100}%` }}></div>
-          
-          {[1, 2, 3, 4].map((i) => (
-            <div 
-              key={i} 
-              className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors shadow-sm",
-                step >= i ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground border border-border"
-              )}
-            >
-              {i}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-card border border-border rounded-3xl shadow-lg p-6 md:p-10">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <AnimatePresence mode="wait">
-            
-            {/* STEP 1: CATEGORY */}
-            {step === 1 && (
-              <motion.div 
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-card border border-border rounded-[2.5rem] shadow-xl shadow-black/5 overflow-hidden">
+        
+        {/* Category Selection Full Width */}
+        <div className="p-8 md:p-12 border-b border-border bg-muted/10">
+          <h3 className="text-2xl font-bold mb-6 text-foreground">1. What kind of help do you need?</h3>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {categories.map((cat) => (
+              <div 
+                key={cat.id}
+                onClick={() => setValue("category", cat.id)}
+                className={cn(
+                  "p-6 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center text-center gap-4 hover:-translate-y-1",
+                  selectedCategory === cat.id 
+                    ? "border-primary bg-primary/5 shadow-md" 
+                    : "border-border bg-background hover:border-primary/40 hover:shadow-sm"
+                )}
               >
-                <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <HeartPulse className="text-primary h-6 w-6" /> What kind of help do you need?
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {categories.map((cat) => (
-                    <div 
-                      key={cat.id}
-                      onClick={() => setValue("category", cat.id)}
-                      className={cn(
-                        "p-6 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center text-center gap-3",
-                        selectedCategory === cat.id 
-                          ? "border-primary bg-primary/5 shadow-sm" 
-                          : "border-border hover:border-primary/40 hover:bg-muted/50"
-                      )}
-                    >
-                      <cat.icon className={cn("h-8 w-8", selectedCategory === cat.id ? "text-primary" : "text-muted-foreground")} />
-                      <span className={cn("font-semibold", selectedCategory === cat.id ? "text-foreground" : "text-muted-foreground")}>{cat.name}</span>
-                    </div>
-                  ))}
+                <div className={cn("p-3 rounded-xl", selectedCategory === cat.id ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground")}>
+                  <cat.icon className="h-6 w-6" />
                 </div>
-                {errors.category && <p className="text-destructive text-sm font-medium">{errors.category.message as string}</p>}
-              </motion.div>
-            )}
-
-            {/* STEP 2: PERSONAL DETAILS */}
-            {step === 2 && (
-              <motion.div 
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <User className="text-primary h-6 w-6" /> Personal Details
-                </h3>
-                
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Full Name</label>
-                    <input {...register("fullName")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none" />
-                    {errors.fullName && <p className="text-destructive text-sm">{errors.fullName.message}</p>}
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Phone Number</label>
-                      <input {...register("phoneNumber")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none" />
-                      {errors.phoneNumber && <p className="text-destructive text-sm">{errors.phoneNumber.message}</p>}
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Alternate Contact</label>
-                      <input {...register("alternateContact")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Family Size</label>
-                      <input type="number" {...register("familyMembers")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Children</label>
-                      <input type="number" {...register("children")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Seniors</label>
-                      <input type="number" {...register("seniorCitizens")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none" />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* STEP 3: LOCATION */}
-            {step === 3 && (
-              <motion.div 
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <MapPin className="text-primary h-6 w-6" /> Location Details
-                </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">District</label>
-                    <input {...register("district")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none" />
-                    {errors.district && <p className="text-destructive text-sm">{errors.district.message}</p>}
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Village/Town</label>
-                    <input {...register("village")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none" />
-                    {errors.village && <p className="text-destructive text-sm">{errors.village.message}</p>}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Complete Address / Landmark</label>
-                  <textarea {...register("address")} rows={3} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none resize-none" />
-                  {errors.address && <p className="text-destructive text-sm">{errors.address.message}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">PIN Code</label>
-                  <input {...register("pinCode")} className="w-full md:w-1/2 px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none" />
-                  {errors.pinCode && <p className="text-destructive text-sm">{errors.pinCode.message}</p>}
-                </div>
-              </motion.div>
-            )}
-
-            {/* STEP 4: EMERGENCY DETAILS */}
-            {step === 4 && (
-              <motion.div 
-                key="step4"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <FileText className="text-primary h-6 w-6" /> Emergency Details
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Emergency Type</label>
-                    <select {...register("emergencyType")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none">
-                      <option value="">Select...</option>
-                      <option value="Flood Water Entering Home">Flood Water Entering Home</option>
-                      <option value="Medical Emergency">Medical Emergency</option>
-                      <option value="Stranded - Need Rescue">Stranded - Need Rescue</option>
-                      <option value="No Food / Drinking Water">No Food / Drinking Water</option>
-                    </select>
-                    {errors.emergencyType && <p className="text-destructive text-sm">{errors.emergencyType.message}</p>}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Urgency Level</label>
-                    <select {...register("urgency")} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none">
-                      <option value="LOW">Low (Can wait 24hrs)</option>
-                      <option value="MEDIUM">Medium (Need help today)</option>
-                      <option value="HIGH">High (Urgent within hours)</option>
-                      <option value="CRITICAL">Critical (Life Threatening)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Describe the situation</label>
-                  <textarea {...register("description")} rows={4} className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/50 outline-none resize-none" />
-                  {errors.description && <p className="text-destructive text-sm">{errors.description.message}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Upload Photos / Videos (Max 5)</label>
-                  <input 
-                    type="file" 
-                    multiple 
-                    accept="image/*,video/*" 
-                    className="hidden" 
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                  />
-                  <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-input rounded-xl p-8 text-center bg-muted/20 hover:bg-muted/50 transition-colors cursor-pointer flex flex-col items-center"
-                  >
-                    <UploadCloud className="h-10 w-10 text-muted-foreground mb-3" />
-                    <span className="font-medium mb-1">Click to upload media</span>
-                    <span className="text-xs text-muted-foreground">Helps us assess the situation better.</span>
-                  </div>
-                  
-                  {selectedFiles.length > 0 && (
-                    <div className="mt-4 space-y-2">
-                      {selectedFiles.map((file, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border border-border text-sm">
-                          <span className="truncate max-w-[200px]">{file.name}</span>
-                          <div className="flex items-center gap-3">
-                            <span className="text-muted-foreground text-xs">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
-                            <button 
-                              type="button" 
-                              onClick={() => removeFile(idx)}
-                              className="text-destructive hover:bg-destructive/10 p-1 rounded-md transition-colors"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="pt-4 border-t border-border">
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" {...register("consent")} className="mt-1 w-5 h-5 text-primary rounded border-input focus:ring-primary/50" />
-                    <span className="text-sm text-muted-foreground leading-relaxed">
-                      I consent to sharing this information with the Hello Life Foundation and its volunteers for the purpose of receiving humanitarian assistance. I understand this information may be stored securely in the system.
-                    </span>
-                  </label>
-                  {errors.consent && <p className="text-destructive text-sm mt-1">{errors.consent.message as string}</p>}
-                </div>
-              </motion.div>
-            )}
-
-          </AnimatePresence>
-
-          <div className="flex justify-between items-center mt-10 pt-6 border-t border-border">
-            {step > 1 ? (
-              <button 
-                type="button" 
-                onClick={() => setStep(s => s - 1)}
-                className="px-6 py-3 font-semibold rounded-xl text-foreground hover:bg-muted transition-colors flex items-center gap-2"
-              >
-                <ChevronLeft className="h-5 w-5" /> Back
-              </button>
-            ) : (
-              <div></div>
-            )}
-
-            {step < 4 ? (
-              <button 
-                type="button" 
-                onClick={handleNextStep}
-                className="px-8 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/90 transition-colors flex items-center gap-2 shadow-sm"
-              >
-                Next Step <ChevronRight className="h-5 w-5" />
-              </button>
-            ) : (
-              <button 
-                type="submit" 
-                disabled={isSubmitting}
-                className="px-8 py-3 bg-destructive text-destructive-foreground font-bold rounded-xl hover:bg-destructive/90 transition-all flex items-center gap-2 shadow-lg shadow-destructive/20 disabled:opacity-70"
-              >
-                {isSubmitting ? "Submitting Request..." : "Submit Emergency Request"}
-              </button>
-            )}
+                <span className={cn("font-bold text-sm", selectedCategory === cat.id ? "text-primary" : "text-muted-foreground")}>{cat.name}</span>
+              </div>
+            ))}
           </div>
-        </form>
-      </div>
+          {errors.category && <p className="text-destructive font-semibold mt-4">{errors.category.message as string}</p>}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border">
+          
+          {/* LEFT SIDE: Personal Information */}
+          <div className="p-8 md:p-12 space-y-8">
+            <h3 className="text-2xl font-bold text-foreground mb-2">2. Personal & Location Details</h3>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-2">Full Name</label>
+                <input {...register("fullName")} className={inputClass} placeholder="Enter your full name" />
+                {errors.fullName && <p className="text-destructive text-sm mt-1">{errors.fullName.message}</p>}
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Phone Number</label>
+                  <input {...register("phoneNumber")} className={inputClass} placeholder="Primary contact" />
+                  {errors.phoneNumber && <p className="text-destructive text-sm mt-1">{errors.phoneNumber.message}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Alternate Contact</label>
+                  <input {...register("alternateContact")} className={inputClass} placeholder="Secondary contact (optional)" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border">
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Family Size</label>
+                  <input type="number" {...register("familyMembers")} className={inputClass} />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Children</label>
+                  <input type="number" {...register("children")} className={inputClass} />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Seniors</label>
+                  <input type="number" {...register("seniorCitizens")} className={inputClass} />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-border space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-foreground mb-2">District</label>
+                    <input {...register("district")} className={inputClass} placeholder="E.g. Wayanad" />
+                    {errors.district && <p className="text-destructive text-sm mt-1">{errors.district.message}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-foreground mb-2">Village/Town</label>
+                    <input {...register("village")} className={inputClass} placeholder="Local area" />
+                    {errors.village && <p className="text-destructive text-sm mt-1">{errors.village.message}</p>}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Complete Address / Landmark</label>
+                  <textarea {...register("address")} rows={3} className={cn(inputClass, "resize-none")} placeholder="Provide detailed directions..." />
+                  {errors.address && <p className="text-destructive text-sm mt-1">{errors.address.message}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">PIN Code</label>
+                  <input {...register("pinCode")} className={inputClass} placeholder="Postal code" />
+                  {errors.pinCode && <p className="text-destructive text-sm mt-1">{errors.pinCode.message}</p>}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE: Emergency Details & Uploads */}
+          <div className="p-8 md:p-12 space-y-8 bg-muted/5">
+            <h3 className="text-2xl font-bold text-foreground mb-2">3. Emergency Details & Uploads</h3>
+            
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Emergency Type</label>
+                  <select {...register("emergencyType")} className={inputClass}>
+                    <option value="">Select...</option>
+                    <option value="Flood Water Entering Home">Flood Water Entering Home</option>
+                    <option value="Medical Emergency">Medical Emergency</option>
+                    <option value="Stranded - Need Rescue">Stranded - Need Rescue</option>
+                    <option value="No Food / Drinking Water">No Food / Drinking Water</option>
+                  </select>
+                  {errors.emergencyType && <p className="text-destructive text-sm mt-1">{errors.emergencyType.message}</p>}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Urgency Level</label>
+                  <select {...register("urgency")} className={inputClass}>
+                    <option value="LOW">Low (Can wait 24hrs)</option>
+                    <option value="MEDIUM">Medium (Need help today)</option>
+                    <option value="HIGH">High (Urgent within hours)</option>
+                    <option value="CRITICAL">Critical (Life Threatening)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-2">Describe the situation</label>
+                <textarea {...register("description")} rows={5} className={cn(inputClass, "resize-none")} placeholder="Please provide specific details about what you need immediately..." />
+                {errors.description && <p className="text-destructive text-sm mt-1">{errors.description.message}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-2">Upload Photos / Videos (Max 5)</label>
+                <input 
+                  type="file" 
+                  multiple 
+                  accept="image/*,video/*" 
+                  className="hidden" 
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                />
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-2 border-dashed border-primary/30 rounded-2xl p-8 text-center bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer flex flex-col items-center"
+                >
+                  <UploadCloud className="h-10 w-10 text-primary mb-3" />
+                  <span className="font-bold text-primary mb-1">Click to upload media</span>
+                  <span className="text-sm font-medium text-primary/70">Helps us assess the situation better.</span>
+                </div>
+                
+                {selectedFiles.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    {selectedFiles.map((file, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-4 bg-background rounded-xl border border-border shadow-sm text-sm">
+                        <span className="truncate font-medium max-w-[200px]">{file.name}</span>
+                        <div className="flex items-center gap-4">
+                          <span className="text-muted-foreground font-semibold text-xs">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                          <button 
+                            type="button" 
+                            onClick={() => removeFile(idx)}
+                            className="text-destructive hover:bg-destructive/10 p-2 rounded-lg transition-colors"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-6 border-t border-border">
+                <label className="flex items-start gap-4 cursor-pointer p-4 rounded-xl bg-background border border-border">
+                  <input type="checkbox" {...register("consent")} className="mt-1 w-5 h-5 text-secondary rounded border-border focus:ring-secondary/50 flex-shrink-0" />
+                  <span className="text-sm font-medium text-muted-foreground leading-relaxed">
+                    I consent to sharing this information with the Hello Life Foundation and its volunteers for the purpose of receiving humanitarian assistance.
+                  </span>
+                </label>
+                {errors.consent && <p className="text-destructive font-semibold text-sm mt-2">{errors.consent.message as string}</p>}
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div className="p-8 md:p-12 border-t border-border bg-background flex justify-end">
+          <button 
+            type="submit" 
+            disabled={isSubmitting}
+            className="w-full md:w-auto px-12 py-5 bg-secondary text-secondary-foreground font-bold text-lg rounded-2xl hover:opacity-90 transition-all shadow-lg shadow-secondary/20 disabled:opacity-70 flex items-center justify-center"
+          >
+            {isSubmitting ? "Submitting Request..." : "Submit Emergency Request"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Structure & Page Layout</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+
+        <!-- ================= RIGHT CONTENT AREA (PAGE PREVIEWS) ================= -->
+        <main class="lg:col-span-9 space-y-12">
+
+            <!-- PAGE 1: HOME PAGE -->
+            <section id="page-1" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-100 border-b border-slate-200 px-4 py-2 font-bold text-xs text-slate-500 uppercase tracking-wider text-center">
+                    PAGE 1 - HOME PAGE
+                </div>
+
+                <!-- Navigation Header -->
+                <header class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center gap-2 font-bold text-lg">
+                        <div class="w-6 h-6 border-2 border-emerald-400 rounded-full flex items-center justify-center text-xs">P</div>
+                        LOGO
+                    </div>
+                    <nav class="hidden md:flex gap-6 text-xs text-slate-300">
+                        <a href="#" class="text-white">Home</a>
+                        <a href="#">Running Projects</a>
+                        <a href="#">Impact</a>
+                        <a href="#">Donate</a>
+                        <a href="#">Need Help</a>
+                        <a href="#">About Us</a>
+                        <a href="#">Contact Us</a>
+                    </nav>
+                    <button class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2 rounded-full font-medium">Donate Now</button>
+                </header>
+
+                <!-- Hero Section -->
+                <div class="relative bg-slate-800 text-white py-16 px-8 text-center bg-cover bg-center" style="background-image: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1000');">
+                    <h2 class="text-3xl font-bold mb-3">Together We Can Change Lives</h2>
+                    <p class="text-slate-300 text-xs max-w-md mx-auto mb-6">Your support today can create a better tomorrow for those who need it most.</p>
+                    <div class="flex justify-center gap-4">
+                        <button class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-5 py-2.5 rounded-md font-medium">Donate Now</button>
+                        <button class="bg-slate-700/80 hover:bg-slate-700 text-white text-xs px-5 py-2.5 rounded-md font-medium border border-slate-500">View Running Projects</button>
+                    </div>
+                </div>
+
+                <!-- Live Impact Stats -->
+                <div class="max-w-4xl mx-auto -mt-6 relative z-10 px-4">
+                    <div class="bg-white rounded-xl shadow-lg border border-slate-100 p-4 grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                        <div>
+                            <div class="text-slate-400 mb-1"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                            <div class="font-bold text-sm text-slate-800">₹ 2,45,78,960+</div>
+                            <div class="text-[10px] text-slate-400">Total Funds Raised</div>
+                        </div>
+                        <div>
+                            <div class="text-slate-400 mb-1"><i class="fa-solid fa-folder-open"></i></div>
+                            <div class="font-bold text-sm text-slate-800">128</div>
+                            <div class="text-[10px] text-slate-400">Active Projects</div>
+                        </div>
+                        <div>
+                            <div class="text-slate-400 mb-1"><i class="fa-solid fa-users"></i></div>
+                            <div class="font-bold text-sm text-slate-800">96,400+</div>
+                            <div class="text-[10px] text-slate-400">People Helped</div>
+                        </div>
+                        <div>
+                            <div class="text-slate-400 mb-1"><i class="fa-solid fa-user-shield"></i></div>
+                            <div class="font-bold text-sm text-slate-800">42</div>
+                            <div class="text-[10px] text-slate-400">Volunteers</div>
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <div class="text-slate-400 mb-1"><i class="fa-solid fa-house-chimney"></i></div>
+                            <div class="font-bold text-sm text-slate-800">1,250+</div>
+                            <div class="text-[10px] text-slate-400">Families Supported</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Projects -->
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 text-sm">FEATURED RUNNING PROJECTS</h3>
+                        <a href="#" class="text-xs text-sky-600 font-medium">View All Projects &rarr;</a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <!-- Project Card 1 -->
+                        <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm flex flex-col justify-between">
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=400" class="h-28 w-full object-cover">
+                            <div class="p-3">
+                                <h4 class="font-bold text-xs text-slate-800">Education for All</h4>
+                                <div class="text-[10px] text-slate-400 mb-2"><i class="fa-solid fa-location-dot"></i> Delhi, India</div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-1">
+                                    <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 73%"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-500 mb-3">
+                                    <span>₹ 2,18,000 raised</span>
+                                    <span>73%</span>
+                                </div>
+                            </div>
+                            <div class="p-3 pt-0">
+                                <button class="w-full py-1.5 bg-slate-100 text-slate-700 text-xs font-medium rounded hover:bg-slate-200">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project Card 2 -->
+                        <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm flex flex-col justify-between">
+                            <img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=400" class="h-28 w-full object-cover">
+                            <div class="p-3">
+                                <h4 class="font-bold text-xs text-slate-800">Clean Water Initiative</h4>
+                                <div class="text-[10px] text-slate-400 mb-2"><i class="fa-solid fa-location-dot"></i> Assam, India</div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-1">
+                                    <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 46%"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-500 mb-3">
+                                    <span>₹ 1,24,000 raised</span>
+                                    <span>46%</span>
+                                </div>
+                            </div>
+                            <div class="p-3 pt-0">
+                                <button class="w-full py-1.5 bg-slate-100 text-slate-700 text-xs font-medium rounded hover:bg-slate-200">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project Card 3 -->
+                        <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm flex flex-col justify-between">
+                            <img src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?q=80&w=400" class="h-28 w-full object-cover">
+                            <div class="p-3">
+                                <h4 class="font-bold text-xs text-slate-800">Healthcare Support</h4>
+                                <div class="text-[10px] text-slate-400 mb-2"><i class="fa-solid fa-location-dot"></i> Bihar, India</div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-1">
+                                    <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 68%"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-500 mb-3">
+                                    <span>₹ 2,33,000 raised</span>
+                                    <span>68%</span>
+                                </div>
+                            </div>
+                            <div class="p-3 pt-0">
+                                <button class="w-full py-1.5 bg-slate-100 text-slate-700 text-xs font-medium rounded hover:bg-slate-200">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project Card 4 -->
+                        <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm flex flex-col justify-between">
+                            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=400" class="h-28 w-full object-cover">
+                            <div class="p-3">
+                                <h4 class="font-bold text-xs text-slate-800">Nutrition Program</h4>
+                                <div class="text-[10px] text-slate-400 mb-2"><i class="fa-solid fa-location-dot"></i> Rajasthan, India</div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-1">
+                                    <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 60%"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-500 mb-3">
+                                    <span>₹ 4,00,000 raised</span>
+                                    <span>60%</span>
+                                </div>
+                            </div>
+                            <div class="p-3 pt-0">
+                                <button class="w-full py-1.5 bg-slate-100 text-slate-700 text-xs font-medium rounded hover:bg-slate-200">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Donors & Monthly Supporters -->
+                <div class="p-8 pt-0 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Top Donors -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800 text-xs">TOP DONATORS (ALL TIME)</h3>
+                            <a href="#" class="text-[11px] text-sky-600">View All &rarr;</a>
+                        </div>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                <div class="flex items-center gap-2"><span class="w-5 text-center font-bold text-amber-500">1</span> <span>Rajesh Sharma</span></div>
+                                <span class="font-semibold">₹ 25,00,000</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                <div class="flex items-center gap-2"><span class="w-5 text-center font-bold text-slate-400">2</span> <span>Priya Verma</span></div>
+                                <span class="font-semibold">₹ 18,00,000</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                <div class="flex items-center gap-2"><span class="w-5 text-center font-bold text-amber-700">3</span> <span>Amit Kumar</span></div>
+                                <span class="font-semibold">₹ 12,00,000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Supporters -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800 text-xs">MONTHLY SUPPORTERS</h3>
+                            <a href="#" class="text-[11px] text-sky-600">View All &rarr;</a>
+                        </div>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                <div class="flex items-center gap-2"><i class="fa-solid fa-circle-user text-slate-400 text-base"></i> <span>Arjun Patel</span></div>
+                                <span class="text-slate-500">14 months</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                <div class="flex items-center gap-2"><i class="fa-solid fa-circle-user text-slate-400 text-base"></i> <span>Sneha Reddy</span></div>
+                                <span class="text-slate-500">12 months</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                <div class="flex items-center gap-2"><i class="fa-solid fa-circle-user text-slate-400 text-base"></i> <span>Karan Mehta</span></div>
+                                <span class="text-slate-500">11 months</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Component -->
+                <footer class="bg-slate-900 text-white p-8 text-xs">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                        <div>
+                            <h4 class="font-bold text-sm mb-2">ABOUT US</h4>
+                            <p class="text-slate-400 text-[11px] leading-relaxed">We are committed to creating a better world by supporting communities in need.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm mb-2">QUICK LINKS</h4>
+                            <ul class="space-y-1 text-slate-400 text-[11px]">
+                                <li><a href="#">Running Projects</a></li>
+                                <li><a href="#">Impact</a></li>
+                                <li><a href="#">Donate</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm mb-2">CONTACT INFO</h4>
+                            <p class="text-slate-400 text-[11px]">123, Hope Street, Guwahati, Assam 781001</p>
+                            <p class="text-slate-400 text-[11px]">+91 96765 43210</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm mb-2">FOLLOW US</h4>
+                            <div class="flex gap-3 text-slate-400 text-base">
+                                <i class="fa-brands fa-facebook"></i>
+                                <i class="fa-brands fa-instagram"></i>
+                                <i class="fa-brands fa-youtube"></i>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </section>
+
+
+            <!-- PAGE 2: RUNNING PROJECTS LISTING -->
+            <section id="page-2" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-100 border-b border-slate-200 px-4 py-2 font-bold text-xs text-slate-500 uppercase tracking-wider text-center">
+                    PAGE 2 - RUNNING PROJECTS (LISTING)
+                </div>
+
+                <div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- Filters Sidebar -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4 text-xs">
+                        <h4 class="font-bold text-slate-700 uppercase">Filters</h4>
+                        <div>
+                            <label class="block text-slate-500 text-[10px] mb-1">Category</label>
+                            <select class="w-full border rounded p-1.5 text-xs bg-white"><option>All Categories</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-500 text-[10px] mb-1">Location</label>
+                            <select class="w-full border rounded p-1.5 text-xs bg-white"><option>All Locations</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-500 text-[10px] mb-1">Status</label>
+                            <select class="w-full border rounded p-1.5 text-xs bg-white"><option>All Status</option></select>
+                        </div>
+                        <button class="w-full bg-emerald-600 text-white font-medium py-1.5 rounded">Apply Filters</button>
+                    </div>
+
+                    <!-- Projects Grid -->
+                    <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white border border-slate-200 rounded-lg p-2 text-xs">
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=300" class="h-24 w-full object-cover rounded mb-2">
+                            <h5 class="font-bold">Education for All</h5>
+                            <p class="text-[10px] text-slate-400">Delhi, India</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-lg p-2 text-xs">
+                            <img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=300" class="h-24 w-full object-cover rounded mb-2">
+                            <h5 class="font-bold">Clean Water Initiative</h5>
+                            <p class="text-[10px] text-slate-400">Assam, India</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-lg p-2 text-xs">
+                            <img src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?q=80&w=300" class="h-24 w-full object-cover rounded mb-2">
+                            <h5 class="font-bold">Healthcare Support</h5>
+                            <p class="text-[10px] text-slate-400">Bihar, India</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- PAGE 3: PROJECT DETAIL PAGE -->
+            <section id="page-3" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-100 border-b border-slate-200 px-4 py-2 font-bold text-xs text-slate-500 uppercase tracking-wider text-center">
+                    PAGE 3 - PROJECT DETAIL PAGE (EXAMPLE)
+                </div>
+
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="md:col-span-2">
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=800" class="h-56 w-full object-cover rounded-lg mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Education for All</h3>
+                            <p class="text-xs text-slate-500 mt-1">Delhi, India • Education</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs space-y-3">
+                            <h4 class="font-bold uppercase text-slate-600">Top Donators</h4>
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between"><span>Rajesh Sharma</span> <span class="font-semibold">₹ 50,000</span></div>
+                                <div class="flex justify-between"><span>Priya Verma</span> <span class="font-semibold">₹ 25,000</span></div>
+                                <div class="flex justify-between"><span>Amit Kumar</span> <span class="font-semibold">₹ 15,000</span></div>
+                            </div>
+                            <button class="w-full py-1.5 bg-emerald-600 text-white rounded font-medium mt-4">Donate Now</button>
+                        </div>
+                    </div>
+
+                    <!-- Tabs & Info -->
+                    <div class="border-b border-slate-200 flex gap-6 text-xs font-semibold text-slate-600 mb-4">
+                        <span class="border-b-2 border-emerald-600 pb-2 text-emerald-600">About Project</span>
+                        <span class="pb-2">Updates</span>
+                        <span class="pb-2">Gallery</span>
+                        <span class="pb-2">Documents</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed max-w-2xl">This project aims to build and improve learning environments, providing books, digital resources, and supporting local teachers.</p>
+                </div>
+            </section>
+
+
+            <!-- PAGE 4: NEED HELP PAGE -->
+            <section id="page-4" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-100 border-b border-slate-200 px-4 py-2 font-bold text-xs text-slate-500 uppercase tracking-wider text-center">
+                    PAGE 4 - NEED HELP PAGE
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-base font-bold text-slate-800 mb-1">Need Help?</h3>
+                    <p class="text-xs text-slate-500 mb-6">We are here to support you. Please fill out the form below and our team will get in touch with you.</p>
+
+                    <form class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs" onsubmit="event.preventDefault();">
+                        <!-- Left Column -->
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-slate-700 border-b pb-1">PERSONAL DETAILS</h4>
+                            <div>
+                                <label class="block mb-1 text-slate-600">Full Name *</label>
+                                <input type="text" class="w-full border border-slate-300 rounded p-2 focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-slate-600">Email Address *</label>
+                                <input type="email" class="w-full border border-slate-300 rounded p-2 focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-slate-600">Category of Help</label>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <label class="flex items-center gap-1.5"><input type="radio" name="cat"> Medical Help</label>
+                                    <label class="flex items-center gap-1.5"><input type="radio" name="cat"> Education Help</label>
+                                    <label class="flex items-center gap-1.5"><input type="radio" name="cat"> Food Support</label>
+                                    <label class="flex items-center gap-1.5"><input type="radio" name="cat"> Emergency</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-slate-700 border-b pb-1">DESCRIBE YOUR SITUATION</h4>
+                            <div>
+                                <textarea rows="3" placeholder="Please describe your situation in detail..." class="w-full border border-slate-300 rounded p-2 focus:outline-none focus:border-emerald-500"></textarea>
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-slate-600">Upload Documents (ID, Medical Reports, etc.)</label>
+                                <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center text-slate-400">
+                                    <i class="fa-solid fa-cloud-arrow-up text-xl mb-1"></i>
+                                    <p class="text-[10px]">Click to upload or drag and drop</p>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 rounded transition">Submit Request</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+</body>
+</html>

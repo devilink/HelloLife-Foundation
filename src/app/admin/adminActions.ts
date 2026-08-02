@@ -103,6 +103,38 @@ export async function createProject(data: { name: string, description: string, g
   return { success: true };
 }
 
+export async function updateProject(id: string, data: { name: string, description: string, goal: number, raised: number, expensesTotal: number, supportersCount: number, location: string, coverImage?: string }) {
+  await requireAdmin();
+  
+  await prisma.project.update({
+    where: { id },
+    data: {
+      name: data.name,
+      description: data.description,
+      goal: data.goal,
+      raised: data.raised,
+      expensesTotal: data.expensesTotal,
+      supportersCount: data.supportersCount,
+      location: data.location,
+    }
+  });
+
+  if (data.coverImage) {
+    // Optionally remove old ones or just add new. We'll just add new for now as this is a simple schema.
+    await prisma.projectImage.create({
+      data: {
+        url: data.coverImage,
+        projectId: id
+      }
+    });
+  }
+
+  revalidatePath("/admin/projects");
+  revalidatePath("/projects");
+  revalidatePath(`/projects/${id}`);
+  return { success: true };
+}
+
 export async function updateProjectStatus(id: string, status: any) {
   await requireAdmin();
   await prisma.project.update({
@@ -195,7 +227,7 @@ export async function addOfflineDonation(data: { donorName: string, amount: numb
 
 // ----------------- EXPENSES -----------------
 
-export async function addExpense(data: { title: string, category: string, amount: number, date: string, location: string, description: string, receiptUrl?: string }) {
+export async function addExpense(data: { title: string, category: string, amount: number, date: string, location: string, description: string, receiptUrl?: string, projectId?: string }) {
   const adminEmail = await requireAdmin();
   
   await prisma.expense.create({
@@ -207,9 +239,13 @@ export async function addExpense(data: { title: string, category: string, amount
       location: data.location,
       description: data.description,
       receiptUrl: data.receiptUrl,
-      approvedBy: adminEmail
+      approvedBy: adminEmail,
+      projectId: data.projectId || null
     }
   });
+
+  // If tied to a project, update the project's total expenses? The user wants admin to manage it manually, but we can do it auto here or let them update it via updateProject. We'll leave it to manual updateProject as per user request to "admin can operate crud operation".
+
 
   revalidatePath("/admin/expenses");
   revalidatePath("/transparency");
@@ -222,6 +258,98 @@ export async function deleteExpense(id: string) {
     where: { id }
   });
   revalidatePath("/admin/expenses");
+  revalidatePath("/transparency");
+  return { success: true };
+}
+
+// ----------------- GALLERY -----------------
+
+export async function addGalleryImage(data: { title: string, category: string, url: string, type: string, projectId?: string }) {
+  await requireAdmin();
+  await prisma.gallery.create({
+    data: {
+      title: data.title,
+      category: data.category,
+      url: data.url,
+      type: data.type || "IMAGE",
+      projectId: data.projectId || null
+    }
+  });
+  revalidatePath("/admin/gallery");
+  revalidatePath("/");
+  return { success: true };
+}
+
+export async function deleteGalleryImage(id: string) {
+  await requireAdmin();
+  await prisma.gallery.delete({
+    where: { id }
+  });
+  revalidatePath("/admin/gallery");
+  revalidatePath("/");
+  return { success: true };
+}
+
+// ----------------- VOLUNTEERS -----------------
+
+export async function addVolunteer(data: { fullName: string, phoneNumber: string, email: string, district: string, vehicleType?: string, availability?: string }) {
+  await requireAdmin();
+  await prisma.volunteer.create({
+    data: {
+      ...data,
+      isActive: true,
+      completedTasks: 0
+    }
+  });
+  revalidatePath("/admin/volunteers");
+  return { success: true };
+}
+
+export async function updateVolunteer(id: string, data: { fullName: string, phoneNumber: string, email: string, district: string, vehicleType?: string, availability?: string, isActive: boolean, completedTasks: number }) {
+  await requireAdmin();
+  await prisma.volunteer.update({
+    where: { id },
+    data
+  });
+  revalidatePath("/admin/volunteers");
+  return { success: true };
+}
+
+export async function deleteVolunteer(id: string) {
+  await requireAdmin();
+  await prisma.volunteer.delete({
+    where: { id }
+  });
+  revalidatePath("/admin/volunteers");
+  return { success: true };
+}
+
+// ----------------- DONATIONS LEDGER -----------------
+
+export async function updateDonation(id: string, data: { donorName: string, anonymous: boolean, amount: number, paymentDate: string, paymentMethod: string, transactionId?: string }) {
+  await requireAdmin();
+  await prisma.donation.update({
+    where: { id },
+    data: {
+      donorName: data.donorName,
+      anonymous: data.anonymous,
+      amount: data.amount,
+      paymentDate: new Date(data.paymentDate),
+      paymentMethod: data.paymentMethod,
+      transactionId: data.transactionId
+    }
+  });
+  revalidatePath("/admin/donations");
+  revalidatePath("/transparency");
+  return { success: true };
+}
+
+export async function deleteDonationLedgerEntry(id: string) {
+  await requireAdmin();
+  await prisma.donation.delete({
+    where: { id }
+  });
+  revalidatePath("/admin/donations");
   revalidatePath("/transparency");
   return { success: true };
 }

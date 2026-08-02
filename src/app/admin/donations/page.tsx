@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import DonationsClientHeader from "./DonationsClientHeader";
 import VerifyDonationAction from "@/components/admin/VerifyDonationAction";
 import Link from "next/link";
+import DonationActions from "./DonationActions";
 
 export default async function AdminDonationsPage() {
   const [donations, pendingConfirmations] = await Promise.all([
@@ -73,12 +74,13 @@ export default async function AdminDonationsPage() {
                 <th className="p-4 font-medium whitespace-nowrap">Date</th>
                 <th className="p-4 font-medium whitespace-nowrap">Payment Method</th>
                 <th className="p-4 font-medium whitespace-nowrap">Transaction ID</th>
+                <th className="p-4 font-medium whitespace-nowrap text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {donations.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
                     No donations found.
                   </td>
                 </tr>
@@ -97,6 +99,9 @@ export default async function AdminDonationsPage() {
                     </td>
                     <td className="p-4 text-sm">{donation.paymentMethod}</td>
                     <td className="p-4 text-sm font-mono text-muted-foreground">{donation.transactionId || "-"}</td>
+                    <td className="p-4">
+                      <DonationActions donation={donation} />
+                    </td>
                   </tr>
                 ))
               )}

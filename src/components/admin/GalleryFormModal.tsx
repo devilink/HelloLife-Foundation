@@ -1,20 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { createProject } from "@/app/admin/adminActions";
+import { addGalleryImage } from "@/app/admin/adminActions";
 import { X, Loader2, Upload } from "lucide-react";
 
-export default function ProjectFormModal({ onClose }: { onClose: () => void }) {
+export default function GalleryFormModal({ onClose }: { onClose: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [coverImageBase64, setCoverImageBase64] = useState<string>("");
+  const [imageBase64, setImageBase64] = useState<string>("");
+  
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    goal: "",
-    location: ""
+    title: "",
+    category: "General Impact",
+    type: "IMAGE"
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const categories = ["General Impact", "Food Distribution", "Medical Camp", "Rescue Operations", "Shelter Rebuilding"];
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -23,7 +25,7 @@ export default function ProjectFormModal({ onClose }: { onClose: () => void }) {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setCoverImageBase64(reader.result as string);
+        setImageBase64(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -31,17 +33,21 @@ export default function ProjectFormModal({ onClose }: { onClose: () => void }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!imageBase64) {
+      alert("Please select an image");
+      return;
+    }
+    
     setIsSubmitting(true);
     try {
-      await createProject({
+      await addGalleryImage({
         ...formData,
-        goal: parseFloat(formData.goal),
-        coverImage: coverImageBase64
+        url: imageBase64
       });
       onClose();
     } catch (error) {
       console.error(error);
-      alert("Failed to create project");
+      alert("Failed to upload image");
     } finally {
       setIsSubmitting(false);
     }
@@ -51,36 +57,27 @@ export default function ProjectFormModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-card w-full max-w-lg rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="flex justify-between items-center p-6 border-b border-border">
-          <h2 className="text-xl font-bold">Add New Project</h2>
+          <h2 className="text-xl font-bold">Upload Gallery Image</h2>
           <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
             <X className="h-5 w-5" />
           </button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Project Name *</label>
-            <input required name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50" />
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Goal Amount (₹) *</label>
-              <input required type="number" name="goal" value={formData.goal} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Location</label>
-              <input name="location" value={formData.location} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50" />
-            </div>
+            <label className="text-sm font-medium">Image Title *</label>
+            <input required name="title" value={formData.title} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
           
           <div className="space-y-2">
-            <label className="text-sm font-medium">Description *</label>
-            <textarea required rows={4} name="description" value={formData.description} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50 resize-none" />
+            <label className="text-sm font-medium">Category *</label>
+            <select name="category" value={formData.category} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50">
+              {categories.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Cover Image</label>
+            <label className="text-sm font-medium">Image File *</label>
             <div className="mt-1 border-2 border-dashed border-border rounded-xl p-6 hover:bg-muted/30 transition-colors flex flex-col items-center justify-center relative overflow-hidden">
               <input 
                 type="file" 
@@ -88,7 +85,7 @@ export default function ProjectFormModal({ onClose }: { onClose: () => void }) {
                 onChange={handleFileChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
-              {coverImageBase64 ? (
+              {imageBase64 ? (
                 <div className="text-center">
                   <p className="text-sm text-primary font-medium">Image selected</p>
                   <p className="text-xs text-muted-foreground mt-1">Click to change</p>
@@ -96,8 +93,8 @@ export default function ProjectFormModal({ onClose }: { onClose: () => void }) {
               ) : (
                 <div className="text-center pointer-events-none">
                   <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-3" />
-                  <p className="text-sm font-medium text-foreground">Click to upload cover image</p>
-                  <p className="text-xs text-muted-foreground mt-1">JPEG, PNG</p>
+                  <p className="text-sm font-medium text-foreground">Click to upload image</p>
+                  <p className="text-xs text-muted-foreground mt-1">JPEG, PNG up to 5MB</p>
                 </div>
               )}
             </div>
@@ -109,7 +106,7 @@ export default function ProjectFormModal({ onClose }: { onClose: () => void }) {
             </button>
             <button type="submit" disabled={isSubmitting} className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-colors disabled:opacity-50">
               {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Create Project
+              Upload Image
             </button>
           </div>
         </form>

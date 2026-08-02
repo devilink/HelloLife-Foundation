@@ -1,62 +1,65 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram } from "lucide-react";
+import { MapPin, Facebook, Instagram, AtSign } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-background border-t border-border pt-16 pb-8">
+    <footer className="bg-slate-950 text-slate-300 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <Link href="/" className="flex items-center gap-3">
-              <Image src="/logo.svg" alt="Hello Life Foundation Logo" width={180} height={48} className="h-10 w-auto grayscale contrast-200 opacity-80 hover:opacity-100 transition-opacity" />
+              <Image src="/logoss.png" alt="Hello Life Foundation Logo" width={48} height={48} className="h-10 w-auto" />
+              <span className="font-extrabold text-xl tracking-tight text-white">Hellolife Foundation</span>
             </Link>
-            <p className="text-muted-foreground text-sm leading-relaxed">
+            <p className="text-slate-400 text-sm leading-relaxed">
               A transparent platform dedicated to providing flood relief and humanitarian support to those in need. Every contribution counts.
             </p>
           </div>
 
           <div>
-            <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
-            <ul className="space-y-3 text-sm">
+            <h3 className="font-semibold text-lg text-white mb-6">Quick Links</h3>
+            <ul className="space-y-4 text-sm">
+
               <li>
-                <Link href="/about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link>
+                <Link href="/projects" className="hover:text-white transition-colors">Active Projects</Link>
               </li>
               <li>
-                <Link href="/projects" className="text-muted-foreground hover:text-primary transition-colors">Active Projects</Link>
+                <Link href="/transparency" className="hover:text-white transition-colors">Financial Dashboard</Link>
               </li>
               <li>
-                <Link href="/transparency" className="text-muted-foreground hover:text-primary transition-colors">Transparency Dashboard</Link>
+                <Link href="/volunteer" className="hover:text-white transition-colors">Become a Volunteer</Link>
               </li>
               <li>
-                <Link href="/volunteer" className="text-muted-foreground hover:text-primary transition-colors">Become a Volunteer</Link>
+                <Link href="/request-help" className="hover:text-white transition-colors">Request Help</Link>
               </li>
             </ul>
           </div>
 
+
           <div>
-            <h3 className="font-semibold text-lg mb-4">Support</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link href="/request-help" className="text-muted-foreground hover:text-primary transition-colors">Request Help</Link>
-              </li>
-              <li>
-                <Link href="/donate" className="text-muted-foreground hover:text-primary transition-colors">Donate Now</Link>
-              </li>
-              <li>
-                <Link href="/faq" className="text-muted-foreground hover:text-primary transition-colors">FAQs</Link>
-              </li>
-            </ul>
+            <h3 className="font-semibold text-lg text-white mb-6">Follow Us</h3>
+            <div className="flex gap-4">
+              <a href="https://www.facebook.com/share/1RUCgZx8Gn/" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-colors">
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a href="https://www.instagram.com/hellolifefoundation?igsh=MXNtYmVva3lhbXNiZw==" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#E1306C] hover:text-white transition-colors">
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a href="https://www.threads.com/@hellolifefoundation" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-black hover:text-white transition-colors">
+                <AtSign className="h-5 w-5" />
+              </a>
+            </div>
           </div>
 
         </div>
 
-        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+        <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
           <p>© {new Date().getFullYear()} Hello Life Foundation. All rights reserved.</p>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+          <div className="flex gap-8">
+            <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

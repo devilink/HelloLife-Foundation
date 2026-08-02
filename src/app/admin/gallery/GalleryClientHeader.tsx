@@ -1,24 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import OfflineDonorModal from "@/components/admin/OfflineDonorModal";
+import GalleryFormModal from "@/components/admin/GalleryFormModal";
 
-export default function DonationsClientHeader() {
+export default function GalleryClientHeader() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Donations Ledger</h1>
+        <h1 className="text-3xl font-bold">Impact Gallery</h1>
         <button 
           onClick={() => setIsModalOpen(true)}
           className="px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
         >
-          Add Donor
+          Upload Image
         </button>
       </div>
 
-      {isModalOpen && <OfflineDonorModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && <GalleryFormModal onClose={() => setIsModalOpen(false)} />}
     </>
   );
 }

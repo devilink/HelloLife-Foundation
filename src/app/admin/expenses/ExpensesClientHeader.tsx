@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ExpenseFormModal from "@/components/admin/ExpenseFormModal";
 
-export default function ExpensesClientHeader() {
+export default function ExpensesClientHeader({ projects = [] }: { projects?: { id: string; name: string }[] }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -18,7 +18,7 @@ export default function ExpensesClientHeader() {
         </button>
       </div>
 
-      {isModalOpen && <ExpenseFormModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && <ExpenseFormModal onClose={() => setIsModalOpen(false)} projects={projects} />}
     </>
   );
 }

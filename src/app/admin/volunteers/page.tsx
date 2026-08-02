@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import VolunteersClientHeader from "./VolunteersClientHeader";
+import VolunteerActions from "./VolunteerActions";
 
 export default async function AdminVolunteersPage() {
   const volunteers = await prisma.volunteer.findMany({
@@ -7,9 +9,7 @@ export default async function AdminVolunteersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Volunteers</h1>
-      </div>
+      <VolunteersClientHeader />
       
       <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
@@ -22,12 +22,13 @@ export default async function AdminVolunteersPage() {
                 <th className="p-4 font-medium whitespace-nowrap">District</th>
                 <th className="p-4 font-medium whitespace-nowrap">Tasks Done</th>
                 <th className="p-4 font-medium whitespace-nowrap">Status</th>
+                <th className="p-4 font-medium whitespace-nowrap text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {volunteers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
                     No volunteers found.
                   </td>
                 </tr>
@@ -47,6 +48,9 @@ export default async function AdminVolunteersPage() {
                       }`}>
                         {vol.isActive ? "Active" : "Inactive"}
                       </span>
+                    </td>
+                    <td className="p-4">
+                      <VolunteerActions volunteer={vol} />
                     </td>
                   </tr>
                 ))

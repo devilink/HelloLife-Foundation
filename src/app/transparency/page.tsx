@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "Transparency Dashboard | Hello Life Foundation",
+  title: "Financial Dashboard | Hello Life Foundation",
   description: "View our financial summary and searchable expense ledger. 100% transparent operations.",
 };
 

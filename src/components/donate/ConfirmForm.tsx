@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
-import { CheckCircle2, UploadCloud, Info, AlertCircle } from "lucide-react";
+import { CheckCircle2, UploadCloud, Info } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { submitDonationConfirmation } from "@/app/actions";
@@ -56,124 +56,114 @@ export default function ConfirmForm() {
 
   if (isSuccess) {
     return (
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-2xl mx-auto p-12 bg-card border border-border rounded-2xl text-center shadow-lg"
-      >
-        <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle2 className="h-10 w-10 text-emerald-500" />
-        </div>
-        <h2 className="text-3xl font-bold mb-4">Verification Pending</h2>
-        <p className="text-muted-foreground mb-8 text-lg">
-          Thank you for submitting your donation details. Our administrators will verify the transaction within 24-48 hours. Once verified, it will appear on our transparency ledger.
-        </p>
-        <Link 
-          href="/transparency" 
-          className="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors"
+      <div className="py-24 px-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-2xl mx-auto p-12 bg-card border border-border rounded-[2.5rem] text-center shadow-xl shadow-black/5"
         >
-          View Transparency Dashboard
-        </Link>
-      </motion.div>
+          <div className="w-24 h-24 bg-emerald-500/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
+            <CheckCircle2 className="h-12 w-12 text-emerald-500" />
+          </div>
+          <h2 className="text-4xl font-extrabold mb-6 text-foreground tracking-tight">Verification Pending</h2>
+          <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
+            Thank you for submitting your donation details. Our administrators will verify the transaction within 24-48 hours. Once verified, it will appear on our transparency ledger.
+          </p>
+          <Link 
+            href="/transparency" 
+            className="inline-block px-10 py-5 bg-primary text-primary-foreground font-bold text-lg rounded-2xl hover:opacity-90 transition-all shadow-lg shadow-primary/20 hover:-translate-y-1"
+          >
+            View Financial Dashboard
+          </Link>
+        </motion.div>
+      </div>
     );
   }
 
+  const inputClass = "w-full px-5 py-4 rounded-2xl border-2 border-border bg-background focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium text-base";
+  const errorInputClass = "border-destructive focus:border-destructive focus:ring-destructive/10";
+
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold mb-3">Submit Donation Details</h1>
-        <p className="text-muted-foreground">
+    <div className="max-w-4xl mx-auto py-16 px-4">
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-extrabold mb-6 tracking-tight text-foreground">Submit Donation Details</h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           Fill out this form after you have completed your payment. 
           Upload a screenshot of the successful transaction for faster verification.
         </p>
       </div>
 
-      <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-4 bg-primary/10 border-b border-primary/20 flex items-start gap-3">
-          <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-          <p className="text-sm text-primary/80 font-medium">
-            This form does NOT deduct money from your account. It is only used to record and verify manual donations for our transparency dashboard.
+      <div className="bg-card border border-border rounded-[2.5rem] shadow-xl shadow-black/5 overflow-hidden">
+        <div className="p-6 md:p-8 bg-secondary/10 border-b border-secondary/20 flex items-start gap-4">
+          <Info className="h-6 w-6 text-secondary shrink-0 mt-0.5" />
+          <p className="text-base text-secondary-foreground font-semibold leading-relaxed">
+            This form does NOT deduct money from your account. It is only used to record and verify manual donations for our financial dashboard.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 md:p-8 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Full Name <span className="text-destructive">*</span></label>
+        <form onSubmit={handleSubmit(onSubmit)} className="p-8 md:p-12 space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-foreground">Full Name <span className="text-destructive">*</span></label>
               <input 
                 {...register("fullName")}
-                className={cn(
-                  "w-full px-4 py-3 rounded-xl border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all",
-                  errors.fullName ? "border-destructive focus:ring-destructive/50" : "border-input"
-                )} 
+                className={cn(inputClass, errors.fullName && errorInputClass)} 
                 placeholder="Enter your name" 
               />
-              {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message}</p>}
+              {errors.fullName && <p className="text-sm font-semibold text-destructive">{errors.fullName.message}</p>}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Phone Number <span className="text-destructive">*</span></label>
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-foreground">Phone Number <span className="text-destructive">*</span></label>
               <input 
                 {...register("phoneNumber")}
-                className={cn(
-                  "w-full px-4 py-3 rounded-xl border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all",
-                  errors.phoneNumber ? "border-destructive focus:ring-destructive/50" : "border-input"
-                )} 
+                className={cn(inputClass, errors.phoneNumber && errorInputClass)} 
                 placeholder="10-digit number" 
               />
-              {errors.phoneNumber && <p className="text-sm text-destructive">{errors.phoneNumber.message}</p>}
+              {errors.phoneNumber && <p className="text-sm font-semibold text-destructive">{errors.phoneNumber.message}</p>}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Email Address (Optional)</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-foreground">Email Address (Optional)</label>
               <input 
                 {...register("email")}
                 type="email"
-                className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" 
+                className={cn(inputClass, errors.email && errorInputClass)} 
                 placeholder="you@example.com" 
               />
-              {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+              {errors.email && <p className="text-sm font-semibold text-destructive">{errors.email.message}</p>}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Donation Amount (₹) <span className="text-destructive">*</span></label>
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-foreground">Donation Amount (₹) <span className="text-destructive">*</span></label>
               <input 
                 {...register("amount")}
                 type="number"
-                className={cn(
-                  "w-full px-4 py-3 rounded-xl border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all",
-                  errors.amount ? "border-destructive focus:ring-destructive/50" : "border-input"
-                )} 
+                className={cn(inputClass, errors.amount && errorInputClass)} 
                 placeholder="e.g. 5000" 
               />
-              {errors.amount && <p className="text-sm text-destructive">{errors.amount.message}</p>}
+              {errors.amount && <p className="text-sm font-semibold text-destructive">{errors.amount.message}</p>}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Payment Date <span className="text-destructive">*</span></label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-foreground">Payment Date <span className="text-destructive">*</span></label>
               <input 
                 {...register("paymentDate")}
                 type="date"
-                className={cn(
-                  "w-full px-4 py-3 rounded-xl border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all",
-                  errors.paymentDate ? "border-destructive focus:ring-destructive/50" : "border-input"
-                )} 
+                className={cn(inputClass, errors.paymentDate && errorInputClass)} 
               />
-              {errors.paymentDate && <p className="text-sm text-destructive">{errors.paymentDate.message}</p>}
+              {errors.paymentDate && <p className="text-sm font-semibold text-destructive">{errors.paymentDate.message}</p>}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Method <span className="text-destructive">*</span></label>
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-foreground">Method <span className="text-destructive">*</span></label>
               <select 
                 {...register("paymentMethod")}
-                className={cn(
-                  "w-full px-4 py-3 rounded-xl border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none",
-                  errors.paymentMethod ? "border-destructive focus:ring-destructive/50" : "border-input"
-                )} 
+                className={cn(inputClass, "appearance-none", errors.paymentMethod && errorInputClass)} 
               >
                 <option value="UPI">UPI</option>
                 <option value="NEFT">Bank Transfer (NEFT/IMPS)</option>
@@ -181,23 +171,20 @@ export default function ConfirmForm() {
               </select>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Transaction ID / UTR <span className="text-destructive">*</span></label>
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-foreground">Transaction ID / UTR <span className="text-destructive">*</span></label>
               <input 
                 {...register("transactionId")}
-                className={cn(
-                  "w-full px-4 py-3 rounded-xl border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all",
-                  errors.transactionId ? "border-destructive focus:ring-destructive/50" : "border-input"
-                )} 
+                className={cn(inputClass, errors.transactionId && errorInputClass)} 
                 placeholder="12-digit number" 
               />
-              {errors.transactionId && <p className="text-sm text-destructive">{errors.transactionId.message}</p>}
+              {errors.transactionId && <p className="text-sm font-semibold text-destructive">{errors.transactionId.message}</p>}
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Payment Screenshot <span className="text-destructive">*</span></label>
-            <div className="border-2 border-dashed border-input rounded-xl p-8 text-center bg-muted/20 hover:bg-muted/50 transition-colors">
+          <div className="space-y-3">
+            <label className="text-sm font-bold text-foreground">Payment Screenshot <span className="text-destructive">*</span></label>
+            <div className="border-2 border-dashed border-primary/30 rounded-2xl p-10 text-center bg-primary/5 hover:bg-primary/10 transition-colors">
               <input 
                 type="file" 
                 id="screenshot" 
@@ -210,56 +197,56 @@ export default function ConfirmForm() {
                 }}
               />
               <label htmlFor="screenshot" className="cursor-pointer flex flex-col items-center">
-                <UploadCloud className="h-10 w-10 text-muted-foreground mb-3" />
+                <UploadCloud className="h-12 w-12 text-primary mb-4" />
                 {screenshot ? (
-                  <span className="text-primary font-medium">{screenshot.name}</span>
+                  <span className="text-primary font-bold text-lg">{screenshot.name}</span>
                 ) : (
                   <>
-                    <span className="font-medium mb-1">Click to upload screenshot</span>
-                    <span className="text-xs text-muted-foreground">PNG, JPG up to 5MB</span>
+                    <span className="font-bold text-lg text-primary mb-1">Click to upload screenshot</span>
+                    <span className="text-sm font-medium text-primary/70">PNG, JPG up to 5MB</span>
                   </>
                 )}
               </label>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Message (Optional)</label>
+          <div className="space-y-3">
+            <label className="text-sm font-bold text-foreground">Message (Optional)</label>
             <textarea 
               {...register("message")}
-              rows={3}
-              className="w-full px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none" 
+              rows={4}
+              className={cn(inputClass, "resize-none")} 
               placeholder="Leave a message for our team..." 
             />
           </div>
 
-          <div className="bg-muted p-5 rounded-xl space-y-4">
-            <p className="font-semibold text-sm">Privacy Options</p>
-            <label className="flex items-center gap-3 cursor-pointer">
+          <div className="bg-muted/30 p-8 rounded-[2rem] space-y-5 border border-border">
+            <p className="font-extrabold text-foreground mb-2">Privacy Options</p>
+            <label className="flex items-center gap-4 cursor-pointer p-4 rounded-xl bg-background border border-border">
               <input 
                 type="radio" 
                 value="false" 
                 {...register("isAnonymous")} 
                 defaultChecked 
-                className="w-4 h-4 text-primary focus:ring-primary/50"
+                className="w-5 h-5 text-primary focus:ring-primary/50 border-border"
               />
-              <span className="text-sm">Display my name publicly on the Recognition Wall</span>
+              <span className="text-sm font-medium text-muted-foreground">Display my name publicly on the Recognition Wall</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className="flex items-center gap-4 cursor-pointer p-4 rounded-xl bg-background border border-border">
               <input 
                 type="radio" 
                 value="true" 
                 {...register("isAnonymous")} 
-                className="w-4 h-4 text-primary focus:ring-primary/50"
+                className="w-5 h-5 text-primary focus:ring-primary/50 border-border"
               />
-              <span className="text-sm">Keep my donation completely anonymous</span>
+              <span className="text-sm font-medium text-muted-foreground">Keep my donation completely anonymous</span>
             </label>
           </div>
 
           <button 
             type="submit" 
             disabled={isSubmitting}
-            className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-md shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full py-5 mt-4 bg-primary text-primary-foreground font-bold text-lg rounded-2xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
           >
             {isSubmitting ? (
               <span className="animate-pulse">Submitting Details...</span>
