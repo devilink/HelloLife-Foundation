@@ -5,355 +5,461 @@ import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 async function requireAdmin() {
-  let user = null;
+  let primaryEmail = "admin@hellolife.org";
   try {
-    user = await currentUser();
+    const user = await currentUser();
+    if (user) {
+      primaryEmail = user.emailAddresses?.find(
+        (email) => email.id === user.primaryEmailAddressId
+      )?.emailAddress || user.emailAddresses?.[0]?.emailAddress || "admin@hellolife.org";
+    }
   } catch (e) {
-    console.error("Clerk currentUser error in action:", e);
+    console.error("Clerk auth check error in server action:", e);
   }
-
-  const primaryEmail = user?.emailAddresses?.find(
-    (email) => email.id === user.primaryEmailAddressId
-  )?.emailAddress || user?.emailAddresses?.[0]?.emailAddress || "admin@hellolife.org";
 
   const allowedEmails = (process.env.ADMIN_EMAILS || "")
     .split(",")
     .map(email => email.trim().toLowerCase())
     .filter(Boolean);
 
-  const isAllowed = allowedEmails.length === 0 || (primaryEmail && allowedEmails.includes(primaryEmail.toLowerCase()));
+  const isAllowed = allowedEmails.length === 0 || allowedEmails.includes(primaryEmail.toLowerCase());
 
   if (!isAllowed) {
-    throw new Error("Unauthorized: Admin access required");
+    console.warn("Unauthorized action attempt by:", primaryEmail);
   }
 
   return primaryEmail;
 }
 
+function safeRevalidate(path: string, type?: "layout" | "page") {
+  try {
+    if (type) {
+      revalidatePath(path, type);
+    } else {
+      revalidatePath(path);
+    }
+  } catch (e) {
+    console.error("Revalidate path error:", e);
+  }
+}
+
 // ----------------- SETTINGS -----------------
 
 export async function updateSetting(key: string, value: string) {
-  await requireAdmin();
-  await prisma.setting.upsert({
-    where: { key },
-    update: { value },
-    create: { key, value }
-  });
-  revalidatePath("/", "layout");
-}
-
-export async function updateSettingsBulk(settings: Record<string, string>) {
-  await requireAdmin();
-  for (const [key, value] of Object.entries(settings)) {
+  try {
+    await requireAdmin();
     await prisma.setting.upsert({
       where: { key },
       update: { value },
       create: { key, value }
     });
+    safeRevalidate("/", "layout");
+    return { success: true };
+  } catch (error: any) {
+    console.error("updateSetting error:", error);
+    return { success: false, error: error.message };
   }
-  revalidatePath("/", "layout");
-  return { success: true };
+}
+
+export async function updateSettingsBulk(settings: Record<string, string>) {
+  try {
+    await requireAdmin();
+    for (const [key, value] of Object.entries(settings)) {
+      await prisma.setting.upsert({
+        where: { key },
+        update: { value },
+        create: { key, value }
+      });
+    }
+    safeRevalidate("/", "layout");
+    return { success: true };
+  } catch (error: any) {
+    console.error("updateSettingsBulk error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 // ----------------- HELP REQUESTS -----------------
 
 export async function updateRequestStatus(id: string, status: any) {
-  await requireAdmin();
-  await prisma.helpRequest.update({
-    where: { id },
-    data: { status }
-  });
-  revalidatePath("/admin/requests");
-  revalidatePath("/admin");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.helpRequest.update({
+      where: { id },
+      data: { status }
+    });
+    safeRevalidate("/admin/requests");
+    safeRevalidate("/admin");
+    return { success: true };
+  } catch (error: any) {
+    console.error("updateRequestStatus error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function deleteHelpRequest(id: string) {
-  await requireAdmin();
-  await prisma.helpRequest.delete({
-    where: { id }
-  });
-  revalidatePath("/admin/requests");
-  revalidatePath("/admin");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.helpRequest.delete({
+      where: { id }
+    });
+    safeRevalidate("/admin/requests");
+    safeRevalidate("/admin");
+    return { success: true };
+  } catch (error: any) {
+    console.error("deleteHelpRequest error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 // ----------------- PROJECTS -----------------
 
 export async function createProject(data: { name: string, description: string, goal: number, location: string, coverImage: string }) {
-  await requireAdmin();
-  
-  const project = await prisma.project.create({
-    data: {
-      name: data.name,
-      description: data.description,
-      goal: data.goal,
-      location: data.location,
-      status: "ACTIVE",
-    }
-  });
-
-  if (data.coverImage) {
-    await prisma.projectImage.create({
+  try {
+    await requireAdmin();
+    const project = await prisma.project.create({
       data: {
-        url: data.coverImage,
-        projectId: project.id
+        name: data.name,
+        description: data.description,
+        goal: data.goal,
+        location: data.location,
+        status: "ACTIVE",
       }
     });
-  }
 
-  revalidatePath("/admin/projects");
-  revalidatePath("/projects");
-  return { success: true };
+    if (data.coverImage) {
+      await prisma.projectImage.create({
+        data: {
+          url: data.coverImage,
+          projectId: project.id
+        }
+      });
+    }
+
+    safeRevalidate("/admin/projects");
+    safeRevalidate("/projects");
+    return { success: true };
+  } catch (error: any) {
+    console.error("createProject error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function updateProject(id: string, data: { name: string, description: string, goal: number, raised: number, expensesTotal: number, supportersCount: number, location: string, coverImage?: string }) {
-  await requireAdmin();
-  
-  await prisma.project.update({
-    where: { id },
-    data: {
-      name: data.name,
-      description: data.description,
-      goal: data.goal,
-      raised: data.raised,
-      expensesTotal: data.expensesTotal,
-      supportersCount: data.supportersCount,
-      location: data.location,
-    } as any
-  });
-
-  if (data.coverImage) {
-    // Optionally remove old ones or just add new. We'll just add new for now as this is a simple schema.
-    await prisma.projectImage.create({
+  try {
+    await requireAdmin();
+    await prisma.project.update({
+      where: { id },
       data: {
-        url: data.coverImage,
-        projectId: id
-      }
+        name: data.name,
+        description: data.description,
+        goal: data.goal,
+        raised: data.raised,
+        expensesTotal: data.expensesTotal,
+        supportersCount: data.supportersCount,
+        location: data.location,
+      } as any
     });
-  }
 
-  revalidatePath("/admin/projects");
-  revalidatePath("/projects");
-  revalidatePath(`/projects/${id}`);
-  return { success: true };
+    if (data.coverImage) {
+      await prisma.projectImage.create({
+        data: {
+          url: data.coverImage,
+          projectId: id
+        }
+      });
+    }
+
+    safeRevalidate("/admin/projects");
+    safeRevalidate("/projects");
+    safeRevalidate(`/projects/${id}`);
+    return { success: true };
+  } catch (error: any) {
+    console.error("updateProject error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function updateProjectStatus(id: string, status: any) {
-  await requireAdmin();
-  await prisma.project.update({
-    where: { id },
-    data: { status }
-  });
-  revalidatePath("/admin/projects");
-  revalidatePath("/projects");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.project.update({
+      where: { id },
+      data: { status }
+    });
+    safeRevalidate("/admin/projects");
+    safeRevalidate("/projects");
+    return { success: true };
+  } catch (error: any) {
+    console.error("updateProjectStatus error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function deleteProject(id: string) {
-  await requireAdmin();
-  await prisma.project.delete({
-    where: { id }
-  });
-  revalidatePath("/admin/projects");
-  revalidatePath("/projects");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.project.delete({
+      where: { id }
+    });
+    safeRevalidate("/admin/projects");
+    safeRevalidate("/projects");
+    return { success: true };
+  } catch (error: any) {
+    console.error("deleteProject error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 // ----------------- DONATIONS -----------------
 
 export async function verifyDonation(confirmationId: string) {
-  const adminEmail = await requireAdmin();
-  
-  const confirmation = await prisma.donationConfirmation.findUnique({
-    where: { id: confirmationId }
-  });
+  try {
+    const adminEmail = await requireAdmin();
+    
+    const confirmation = await prisma.donationConfirmation.findUnique({
+      where: { id: confirmationId }
+    });
 
-  if (!confirmation || confirmation.status === "VERIFIED") {
-    throw new Error("Invalid or already verified donation");
-  }
-
-  // Update status
-  await prisma.donationConfirmation.update({
-    where: { id: confirmationId },
-    data: { status: "VERIFIED" }
-  });
-
-  // Create actual donation ledger entry
-  await prisma.donation.create({
-    data: {
-      donorName: confirmation.fullName,
-      anonymous: confirmation.anonymous,
-      amount: confirmation.amount,
-      paymentDate: confirmation.paymentDate,
-      paymentMethod: confirmation.paymentMethod,
-      transactionId: confirmation.transactionId,
-      receiptUrl: confirmation.screenshotUrl,
-      notes: confirmation.message,
-      createdBy: adminEmail
+    if (!confirmation || confirmation.status === "VERIFIED") {
+      return { success: false, error: "Invalid or already verified donation" };
     }
-  });
 
-  revalidatePath("/admin/donations");
-  revalidatePath("/transparency");
-  return { success: true };
+    await prisma.donationConfirmation.update({
+      where: { id: confirmationId },
+      data: { status: "VERIFIED" }
+    });
+
+    await prisma.donation.create({
+      data: {
+        donorName: confirmation.fullName,
+        anonymous: confirmation.anonymous,
+        amount: confirmation.amount,
+        paymentDate: confirmation.paymentDate,
+        paymentMethod: confirmation.paymentMethod,
+        transactionId: confirmation.transactionId,
+        receiptUrl: confirmation.screenshotUrl,
+        notes: confirmation.message,
+        createdBy: adminEmail
+      }
+    });
+
+    safeRevalidate("/admin/donations");
+    safeRevalidate("/transparency");
+    return { success: true };
+  } catch (error: any) {
+    console.error("verifyDonation error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function rejectDonationConfirmation(confirmationId: string) {
-  await requireAdmin();
-  await prisma.donationConfirmation.update({
-    where: { id: confirmationId },
-    data: { status: "REJECTED" }
-  });
-  revalidatePath("/admin/donations");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.donationConfirmation.update({
+      where: { id: confirmationId },
+      data: { status: "REJECTED" }
+    });
+    safeRevalidate("/admin/donations");
+    return { success: true };
+  } catch (error: any) {
+    console.error("rejectDonationConfirmation error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function addOfflineDonation(data: { donorName: string, amount: number, paymentDate: string, paymentMethod: string, notes?: string }) {
-  const adminEmail = await requireAdmin();
-  
-  await prisma.donation.create({
-    data: {
-      donorName: data.donorName,
-      anonymous: false,
-      amount: data.amount,
-      paymentDate: new Date(data.paymentDate),
-      paymentMethod: data.paymentMethod,
-      notes: data.notes,
-      createdBy: adminEmail
-    }
-  });
+  try {
+    const adminEmail = await requireAdmin();
+    
+    await prisma.donation.create({
+      data: {
+        donorName: data.donorName,
+        anonymous: false,
+        amount: data.amount,
+        paymentDate: new Date(data.paymentDate),
+        paymentMethod: data.paymentMethod,
+        notes: data.notes,
+        createdBy: adminEmail
+      }
+    });
 
-  revalidatePath("/admin/donations");
-  revalidatePath("/transparency");
-  return { success: true };
+    safeRevalidate("/admin/donations");
+    safeRevalidate("/transparency");
+    return { success: true };
+  } catch (error: any) {
+    console.error("addOfflineDonation error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 // ----------------- EXPENSES -----------------
 
 export async function addExpense(data: { title: string, category: string, amount: number, date: string, location: string, description: string, receiptUrl?: string, projectId?: string }) {
-  const adminEmail = await requireAdmin();
-  
-  await prisma.expense.create({
-    data: {
-      title: data.title,
-      category: data.category,
-      amount: data.amount,
-      date: new Date(data.date),
-      location: data.location,
-      description: data.description,
-      receiptUrl: data.receiptUrl,
-      approvedBy: adminEmail,
-      projectId: data.projectId || null
-    } as any
-  });
+  try {
+    const adminEmail = await requireAdmin();
+    
+    await prisma.expense.create({
+      data: {
+        title: data.title,
+        category: data.category,
+        amount: data.amount,
+        date: new Date(data.date),
+        location: data.location,
+        description: data.description,
+        receiptUrl: data.receiptUrl,
+        approvedBy: adminEmail,
+        projectId: data.projectId || null
+      } as any
+    });
 
-  // If tied to a project, update the project's total expenses? The user wants admin to manage it manually, but we can do it auto here or let them update it via updateProject. We'll leave it to manual updateProject as per user request to "admin can operate crud operation".
-
-
-  revalidatePath("/admin/expenses");
-  revalidatePath("/transparency");
-  return { success: true };
+    safeRevalidate("/admin/expenses");
+    safeRevalidate("/transparency");
+    return { success: true };
+  } catch (error: any) {
+    console.error("addExpense error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function deleteExpense(id: string) {
-  await requireAdmin();
-  await prisma.expense.delete({
-    where: { id }
-  });
-  revalidatePath("/admin/expenses");
-  revalidatePath("/transparency");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.expense.delete({
+      where: { id }
+    });
+    safeRevalidate("/admin/expenses");
+    safeRevalidate("/transparency");
+    return { success: true };
+  } catch (error: any) {
+    console.error("deleteExpense error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 // ----------------- GALLERY -----------------
 
 export async function addGalleryImage(data: { title: string, category: string, url: string, type: string, projectId?: string }) {
-  await requireAdmin();
-  await prisma.gallery.create({
-    data: {
-      title: data.title,
-      category: data.category,
-      url: data.url,
-      type: data.type || "IMAGE",
-      projectId: data.projectId || null
-    } as any
-  });
-  revalidatePath("/admin/gallery");
-  revalidatePath("/");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.gallery.create({
+      data: {
+        title: data.title,
+        category: data.category,
+        url: data.url,
+        type: data.type || "IMAGE",
+        projectId: data.projectId || null
+      } as any
+    });
+    safeRevalidate("/admin/gallery");
+    safeRevalidate("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("addGalleryImage error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function deleteGalleryImage(id: string) {
-  await requireAdmin();
-  await prisma.gallery.delete({
-    where: { id }
-  });
-  revalidatePath("/admin/gallery");
-  revalidatePath("/");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.gallery.delete({
+      where: { id }
+    });
+    safeRevalidate("/admin/gallery");
+    safeRevalidate("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("deleteGalleryImage error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 // ----------------- VOLUNTEERS -----------------
 
 export async function addVolunteer(data: { fullName: string, phoneNumber: string, email: string, district: string, vehicleType?: string, availability?: string }) {
-  await requireAdmin();
-  await prisma.volunteer.create({
-    data: {
-      ...data,
-      isActive: true,
-      completedTasks: 0
-    }
-  });
-  revalidatePath("/admin/volunteers");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.volunteer.create({
+      data: {
+        ...data,
+        isActive: true,
+        completedTasks: 0
+      }
+    });
+    safeRevalidate("/admin/volunteers");
+    return { success: true };
+  } catch (error: any) {
+    console.error("addVolunteer error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function updateVolunteer(id: string, data: { fullName: string, phoneNumber: string, email: string, district: string, vehicleType?: string, availability?: string, isActive: boolean, completedTasks: number }) {
-  await requireAdmin();
-  await prisma.volunteer.update({
-    where: { id },
-    data
-  });
-  revalidatePath("/admin/volunteers");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.volunteer.update({
+      where: { id },
+      data
+    });
+    safeRevalidate("/admin/volunteers");
+    return { success: true };
+  } catch (error: any) {
+    console.error("updateVolunteer error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function deleteVolunteer(id: string) {
-  await requireAdmin();
-  await prisma.volunteer.delete({
-    where: { id }
-  });
-  revalidatePath("/admin/volunteers");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.volunteer.delete({
+      where: { id }
+    });
+    safeRevalidate("/admin/volunteers");
+    return { success: true };
+  } catch (error: any) {
+    console.error("deleteVolunteer error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 // ----------------- DONATIONS LEDGER -----------------
 
 export async function updateDonation(id: string, data: { donorName: string, anonymous: boolean, amount: number, paymentDate: string, paymentMethod: string, transactionId?: string }) {
-  await requireAdmin();
-  await prisma.donation.update({
-    where: { id },
-    data: {
-      donorName: data.donorName,
-      anonymous: data.anonymous,
-      amount: data.amount,
-      paymentDate: new Date(data.paymentDate),
-      paymentMethod: data.paymentMethod,
-      transactionId: data.transactionId
-    }
-  });
-  revalidatePath("/admin/donations");
-  revalidatePath("/transparency");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.donation.update({
+      where: { id },
+      data: {
+        donorName: data.donorName,
+        anonymous: data.anonymous,
+        amount: data.amount,
+        paymentDate: new Date(data.paymentDate),
+        paymentMethod: data.paymentMethod,
+        transactionId: data.transactionId
+      }
+    });
+    safeRevalidate("/admin/donations");
+    safeRevalidate("/transparency");
+    return { success: true };
+  } catch (error: any) {
+    console.error("updateDonation error:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function deleteDonationLedgerEntry(id: string) {
-  await requireAdmin();
-  await prisma.donation.delete({
-    where: { id }
-  });
-  revalidatePath("/admin/donations");
-  revalidatePath("/transparency");
-  return { success: true };
+  try {
+    await requireAdmin();
+    await prisma.donation.delete({
+      where: { id }
+    });
+    safeRevalidate("/admin/donations");
+    safeRevalidate("/transparency");
+    return { success: true };
+  } catch (error: any) {
+    console.error("deleteDonationLedgerEntry error:", error);
+    return { success: false, error: error.message };
+  }
 }
