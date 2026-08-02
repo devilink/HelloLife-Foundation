@@ -12,11 +12,8 @@ export default function HeroSection() {
         style={{ backgroundImage: "url('/herp.png')" }}
         aria-hidden="true"
       />
-      {/* Gradient Overlay - Darker on mobile for text readability, faded on desktop left */}
-      <div className="absolute inset-0 bg-slate-900/60 md:bg-transparent md:bg-gradient-to-r md:from-slate-950/90 md:via-slate-900/70 md:to-transparent" />
-      {/* Additional bottom gradient for smooth transition */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
-
+      {/* Extremely Light Gradient Overlay for subtle contrast */}
+      <div className="absolute inset-0 bg-slate-900/20 md:bg-transparent md:bg-gradient-to-r md:from-slate-900/50 md:via-slate-900/10 md:to-transparent" />
       <div className="relative z-10 max-w-7xl w-full mx-auto flex flex-col items-center md:items-start justify-center">
         <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight leading-tight max-w-3xl">
           Together We Can <br className="hidden md:block" />
