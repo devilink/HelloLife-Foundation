@@ -5,11 +5,12 @@ import SupportSection from "@/components/home/SupportSection";
 import ImpactGallery from "@/components/home/ImpactGallery";
 import TopDonors from "@/components/home/TopDonors";
 import { prisma } from "@/lib/prisma";
+import { getSettings } from "@/lib/settings";
 
 export const revalidate = 60;
 
 export default async function Home() {
-  let dbSettings: any[] = [];
+  let settingsMap: Record<string, string> = {};
   let activeProjectsCount = 0;
   let completedProjectsCount = 0;
   let pendingRequestsCount = 0;
@@ -20,7 +21,7 @@ export default async function Home() {
 
   try {
     const res = await Promise.all([
-      prisma.setting.findMany(),
+      getSettings(),
       prisma.project.count({ where: { status: "ACTIVE" } }),
       prisma.project.count({ where: { status: "COMPLETED" } }),
       prisma.helpRequest.count({ where: { status: "PENDING" } }),
@@ -39,22 +40,17 @@ export default async function Home() {
         take: 5
       })
     ]);
-    dbSettings = res[0];
-    activeProjectsCount = res[1];
-    completedProjectsCount = res[2];
-    pendingRequestsCount = res[3];
-    projects = res[4];
-    galleries = res[5];
-    topDonations = res[6];
-    recentDonations = res[7];
+    settingsMap = res[0] as Record<string, string>;
+    activeProjectsCount = res[1] as number;
+    completedProjectsCount = res[2] as number;
+    pendingRequestsCount = res[3] as number;
+    projects = res[4] as any[];
+    galleries = res[5] as any[];
+    topDonations = res[6] as any[];
+    recentDonations = res[7] as any[];
   } catch (error) {
     console.error("Home page DB query error:", error);
   }
-
-  const settingsMap = dbSettings.reduce((acc, s) => {
-    acc[s.key] = s.value;
-    return acc;
-  }, {} as Record<string, string>);
 
   const stats = {
     totalRaised: settingsMap.totalRaised || "0",

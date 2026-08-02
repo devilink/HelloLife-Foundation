@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 async function requireAdmin() {
   let primaryEmail = "admin@hellolife.org";
@@ -49,6 +49,7 @@ export async function updateSetting(key: string, value: string) {
       update: { value },
       create: { key, value }
     });
+    revalidateTag("settings");
     safeRevalidate("/");
     safeRevalidate("/admin/settings");
     return { success: true };
@@ -68,6 +69,7 @@ export async function updateSettingsBulk(settings: Record<string, string>) {
         create: { key, value }
       });
     }
+    revalidateTag("settings");
     safeRevalidate("/");
     safeRevalidate("/admin/settings");
     return { success: true };

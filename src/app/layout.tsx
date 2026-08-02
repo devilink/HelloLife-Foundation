@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { prisma } from "@/lib/prisma";
+import { getSettings } from "@/lib/settings";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -107,17 +107,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let dbSettings: any[] = [];
-  try {
-    dbSettings = await prisma.setting.findMany();
-  } catch (error) {
-    console.error("RootLayout DB query error:", error);
-  }
-
-  const settingsMap = dbSettings.reduce((acc, s) => {
-    acc[s.key] = s.value;
-    return acc;
-  }, {} as Record<string, string>);
+  const settingsMap = await getSettings();
   return (
     <ClerkProvider>
       <html
