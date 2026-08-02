@@ -4,7 +4,12 @@ import SettingsForm from "@/components/admin/SettingsForm";
 export const dynamic = "force-dynamic";
 
 export default async function AdminSettingsPage() {
-  const dbSettings = await prisma.setting.findMany();
+  let dbSettings: any[] = [];
+  try {
+    dbSettings = await prisma.setting.findMany();
+  } catch (error) {
+    console.error("Admin settings DB error:", error);
+  }
   const settingsMap = dbSettings.reduce((acc, s) => {
     acc[s.key] = s.value;
     return acc;

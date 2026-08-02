@@ -5,9 +5,14 @@ import VolunteerActions from "./VolunteerActions";
 export const dynamic = "force-dynamic";
 
 export default async function AdminVolunteersPage() {
-  const volunteers = await prisma.volunteer.findMany({
-    orderBy: { createdAt: 'desc' }
-  });
+  let volunteers: any[] = [];
+  try {
+    volunteers = await prisma.volunteer.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("Admin volunteers DB error:", error);
+  }
 
   return (
     <div className="space-y-6">

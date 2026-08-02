@@ -7,14 +7,19 @@ import EditProjectAction from "@/components/admin/EditProjectAction";
 export const dynamic = "force-dynamic";
 
 export default async function AdminProjectsPage() {
-  const projects = await prisma.project.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      _count: {
-        select: { images: true }
+  let projects: any[] = [];
+  try {
+    projects = await prisma.project.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        _count: {
+          select: { images: true }
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error("Admin projects DB error:", error);
+  }
 
   return (
     <div className="space-y-6">

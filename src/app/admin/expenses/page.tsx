@@ -6,15 +6,25 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function AdminExpensesPage() {
-  const expenses = await (prisma.expense as any).findMany({
-    orderBy: { date: 'desc' },
-    include: { project: true }
-  });
+  let expenses: any[] = [];
+  let projects: any[] = [];
 
-  const projects = await prisma.project.findMany({
-    where: { status: 'ACTIVE' },
-    select: { id: true, name: true }
-  });
+  try {
+    const res = await Promise.all([
+      (prisma.expense as any).findMany({
+        orderBy: { date: 'desc' },
+        include: { project: true }
+      }),
+      prisma.project.findMany({
+        where: { status: 'ACTIVE' },
+        select: { id: true, name: true }
+      })
+    ]);
+    expenses = res[0];
+    projects = res[1];
+  } catch (error) {
+    console.error("Admin expenses DB error:", error);
+  }
 
   return (
     <div className="space-y-6">

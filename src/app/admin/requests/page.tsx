@@ -5,9 +5,14 @@ import DeleteAction from "@/components/admin/DeleteAction";
 export const dynamic = "force-dynamic";
 
 export default async function AdminRequestsPage() {
-  const requests = await prisma.helpRequest.findMany({
-    orderBy: { createdAt: 'desc' }
-  });
+  let requests: any[] = [];
+  try {
+    requests = await prisma.helpRequest.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("Admin requests DB error:", error);
+  }
 
   return (
     <div className="space-y-6">

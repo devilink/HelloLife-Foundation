@@ -7,13 +7,22 @@ import DonationActions from "./DonationActions";
 export const dynamic = "force-dynamic";
 
 export default async function AdminDonationsPage() {
-  const [donations, pendingConfirmations] = await Promise.all([
-    prisma.donation.findMany({ orderBy: { createdAt: 'desc' } }),
-    prisma.donationConfirmation.findMany({ 
-      where: { status: "PENDING" },
-      orderBy: { createdAt: 'desc' } 
-    })
-  ]);
+  let donations: any[] = [];
+  let pendingConfirmations: any[] = [];
+
+  try {
+    const res = await Promise.all([
+      prisma.donation.findMany({ orderBy: { createdAt: 'desc' } }),
+      prisma.donationConfirmation.findMany({ 
+        where: { status: "PENDING" },
+        orderBy: { createdAt: 'desc' } 
+      })
+    ]);
+    donations = res[0];
+    pendingConfirmations = res[1];
+  } catch (error) {
+    console.error("Admin donations DB error:", error);
+  }
 
   return (
     <div className="space-y-10">

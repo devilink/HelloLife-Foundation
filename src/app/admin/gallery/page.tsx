@@ -6,9 +6,14 @@ import Image from "next/image";
 export const dynamic = "force-dynamic";
 
 export default async function AdminGalleryPage() {
-  const images = await prisma.gallery.findMany({
-    orderBy: { createdAt: 'desc' }
-  });
+  let images: any[] = [];
+  try {
+    images = await prisma.gallery.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("Admin gallery DB error:", error);
+  }
 
   return (
     <div className="space-y-6">

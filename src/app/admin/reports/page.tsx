@@ -3,12 +3,25 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function AdminReportsPage() {
-  const [totalDonations, totalExpenses, totalVolunteers, activeProjects] = await Promise.all([
-    prisma.donation.aggregate({ _sum: { amount: true }, _count: true }),
-    prisma.expense.aggregate({ _sum: { amount: true }, _count: true }),
-    prisma.volunteer.count({ where: { isActive: true } }),
-    prisma.project.count({ where: { status: 'ACTIVE' } })
-  ]);
+  let totalDonations = { _sum: { amount: 0 }, _count: 0 };
+  let totalExpenses = { _sum: { amount: 0 }, _count: 0 };
+  let totalVolunteers = 0;
+  let activeProjects = 0;
+
+  try {
+    const res = await Promise.all([
+      prisma.donation.aggregate({ _sum: { amount: true }, _count: true }),
+      prisma.expense.aggregate({ _sum: { amount: true }, _count: true }),
+      prisma.volunteer.count({ where: { isActive: true } }),
+      prisma.project.count({ where: { status: 'ACTIVE' } })
+    ]);
+    totalDonations = res[0] as any;
+    totalExpenses = res[1] as any;
+    totalVolunteers = res[2];
+    activeProjects = res[3];
+  } catch (error) {
+    console.error("Admin reports DB error:", error);
+  }
 
   return (
     <div className="space-y-6">
