@@ -38,6 +38,7 @@ function safeRevalidate(path: string, type?: "layout" | "page") {
     } else {
       revalidatePath(path);
     }
+    revalidatePath("/", "layout");
   } catch (e) {
     console.error("Revalidate path error:", e);
   }
@@ -54,6 +55,7 @@ export async function updateSetting(key: string, value: string) {
       create: { key, value }
     });
     safeRevalidate("/", "layout");
+    safeRevalidate("/admin/settings");
     return { success: true };
   } catch (error: any) {
     console.error("updateSetting error:", error);
@@ -72,6 +74,7 @@ export async function updateSettingsBulk(settings: Record<string, string>) {
       });
     }
     safeRevalidate("/", "layout");
+    safeRevalidate("/admin/settings");
     return { success: true };
   } catch (error: any) {
     console.error("updateSettingsBulk error:", error);

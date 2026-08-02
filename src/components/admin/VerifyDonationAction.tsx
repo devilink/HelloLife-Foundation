@@ -4,13 +4,18 @@ import { useState } from "react";
 import { verifyDonation, rejectDonationConfirmation } from "@/app/admin/adminActions";
 import { Check, X, Loader2 } from "lucide-react";
 
+import { useRouter } from "next/navigation";
+
 export default function VerifyDonationAction({ confirmationId }: { confirmationId: string }) {
+  const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleVerify = async () => {
     setIsProcessing(true);
     try {
-      await verifyDonation(confirmationId);
+      const res = await verifyDonation(confirmationId);
+      if (!res.success) throw new Error(res.error || "Failed to verify");
+      router.refresh();
     } catch (error) {
       console.error(error);
       alert("Failed to verify");
@@ -23,7 +28,9 @@ export default function VerifyDonationAction({ confirmationId }: { confirmationI
     if (!confirm("Are you sure you want to reject this donation verification?")) return;
     setIsProcessing(true);
     try {
-      await rejectDonationConfirmation(confirmationId);
+      const res = await rejectDonationConfirmation(confirmationId);
+      if (!res.success) throw new Error(res.error || "Failed to reject");
+      router.refresh();
     } catch (error) {
       console.error(error);
       alert("Failed to reject");

@@ -4,7 +4,10 @@ import { useState } from "react";
 import { Trash2, Loader2 } from "lucide-react";
 import { deleteHelpRequest, deleteProject, deleteExpense, deleteGalleryImage, deleteVolunteer, deleteDonationLedgerEntry } from "@/app/admin/adminActions";
 
+import { useRouter } from "next/navigation";
+
 export default function DeleteAction({ id, entity }: { id: string, entity: "request" | "project" | "expense" | "galleryImage" | "volunteer" | "donationLedgerEntry" }) {
+  const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -12,12 +15,16 @@ export default function DeleteAction({ id, entity }: { id: string, entity: "requ
     
     setIsDeleting(true);
     try {
-      if (entity === "request") await deleteHelpRequest(id);
-      if (entity === "project") await deleteProject(id);
-      if (entity === "expense") await deleteExpense(id);
-      if (entity === "galleryImage") await deleteGalleryImage(id);
-      if (entity === "volunteer") await deleteVolunteer(id);
-      if (entity === "donationLedgerEntry") await deleteDonationLedgerEntry(id);
+      let res;
+      if (entity === "request") res = await deleteHelpRequest(id);
+      if (entity === "project") res = await deleteProject(id);
+      if (entity === "expense") res = await deleteExpense(id);
+      if (entity === "galleryImage") res = await deleteGalleryImage(id);
+      if (entity === "volunteer") res = await deleteVolunteer(id);
+      if (entity === "donationLedgerEntry") res = await deleteDonationLedgerEntry(id);
+      
+      if (res && !res.success) throw new Error(res.error || "Failed to delete");
+      router.refresh();
     } catch (error) {
       console.error(error);
       alert("Failed to delete.");

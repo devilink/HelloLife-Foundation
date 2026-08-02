@@ -5,7 +5,10 @@ import { updateProjectStatus } from "@/app/admin/adminActions";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useRouter } from "next/navigation";
+
 export default function ProjectStatusToggle({ projectId, currentStatus }: { projectId: string, currentStatus: string }) {
+  const router = useRouter();
   const [isUpdating, setIsUpdating] = useState(false);
   const [status, setStatus] = useState(currentStatus);
 
@@ -13,8 +16,10 @@ export default function ProjectStatusToggle({ projectId, currentStatus }: { proj
     const newStatus = status === "ACTIVE" ? "COMPLETED" : "ACTIVE";
     setIsUpdating(true);
     try {
-      await updateProjectStatus(projectId, newStatus);
+      const res = await updateProjectStatus(projectId, newStatus);
+      if (!res.success) throw new Error(res.error || "Failed to update");
       setStatus(newStatus);
+      router.refresh();
     } catch (error) {
       console.error(error);
       alert("Failed to update status");

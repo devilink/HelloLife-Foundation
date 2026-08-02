@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { updateSettingsBulk } from "@/app/admin/adminActions";
+import { useRouter } from "next/navigation";
+
 import { Save, Loader2 } from "lucide-react";
+import { updateSettingsBulk } from "@/app/admin/adminActions";
 export default function SettingsForm({ initialSettings }: { initialSettings: Record<string, string> }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
   const [settings, setSettings] = useState({
     totalRaised: initialSettings.totalRaised || "0",
     totalExpenses: initialSettings.totalExpenses || "0",
@@ -27,6 +30,7 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Rec
     try {
       await updateSettingsBulk(settings);
       alert("Settings saved successfully!");
+      router.refresh();
     } catch (error) {
       console.error(error);
       alert("Failed to save settings.");

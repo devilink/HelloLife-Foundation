@@ -14,7 +14,10 @@ const statuses = [
   "REJECTED"
 ];
 
+import { useRouter } from "next/navigation";
+
 export default function RequestStatusDropdown({ requestId, currentStatus }: { requestId: string, currentStatus: string }) {
+  const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -23,7 +26,9 @@ export default function RequestStatusDropdown({ requestId, currentStatus }: { re
     setStatus(newStatus);
     setIsUpdating(true);
     try {
-      await updateRequestStatus(requestId, newStatus);
+      const res = await updateRequestStatus(requestId, newStatus);
+      if (!res.success) throw new Error(res.error || "Failed to update");
+      router.refresh();
     } catch (error) {
       console.error(error);
       alert("Failed to update status");

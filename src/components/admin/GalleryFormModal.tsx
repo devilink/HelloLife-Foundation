@@ -4,7 +4,10 @@ import { useState } from "react";
 import { addGalleryImage } from "@/app/admin/adminActions";
 import { X, Loader2, Upload } from "lucide-react";
 
+import { useRouter } from "next/navigation";
+
 export default function GalleryFormModal({ onClose }: { onClose: () => void }) {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageBase64, setImageBase64] = useState<string>("");
   
@@ -40,10 +43,12 @@ export default function GalleryFormModal({ onClose }: { onClose: () => void }) {
     
     setIsSubmitting(true);
     try {
-      await addGalleryImage({
+      const res = await addGalleryImage({
         ...formData,
         url: imageBase64
       });
+      if (!res.success) throw new Error(res.error || "Failed to upload image");
+      router.refresh();
       onClose();
     } catch (error) {
       console.error(error);
