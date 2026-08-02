@@ -5,6 +5,8 @@ import Link from "next/link";
 import { MapPin, Share2, Heart, Clock } from "lucide-react";
 import ProjectTabs from "@/components/projects/ProjectTabs";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   

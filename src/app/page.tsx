@@ -6,6 +6,8 @@ import ImpactGallery from "@/components/home/ImpactGallery";
 import TopDonors from "@/components/home/TopDonors";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // Fetch real data from Prisma
   const [

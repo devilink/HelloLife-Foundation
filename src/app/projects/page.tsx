@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: "Explore our ongoing operations and relief projects. See where your donations are making an impact.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectsPage() {
   // Fetch all active projects from the database
   const projects = await prisma.project.findMany({

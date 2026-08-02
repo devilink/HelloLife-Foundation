@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: "View our financial summary and searchable expense ledger. 100% transparent operations.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function TransparencyPage() {
   const [expenses, dbSettings] = await Promise.all([
     prisma.expense.findMany({
