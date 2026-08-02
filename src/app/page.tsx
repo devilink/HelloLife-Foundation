@@ -25,9 +25,9 @@ export default async function Home() {
       prisma.project.count({ where: { status: "COMPLETED" } }),
       prisma.helpRequest.count({ where: { status: "PENDING" } }),
       prisma.project.findMany({
-        take: 3,
+        take: 6,
         orderBy: { createdAt: "desc" },
-        include: { images: { take: 1 } }
+        include: { images: true }
       }),
       (prisma.gallery as any).findMany({ where: { projectId: null }, orderBy: { createdAt: "desc" }, take: 8 }),
       prisma.donation.findMany({
@@ -75,7 +75,8 @@ export default async function Home() {
     description: p.description,
     district: p.location || "Various",
     goal: p.goal,
-    raised: (p as any).raised || 0, // Fallback if raised is null
+    raised: (p as any).raised || 0,
+    images: p.images?.map((img: any) => img.url) || [],
     coverImage: p.images[0]?.url || "/hero-bg.jpg",
     status: p.status,
   }));

@@ -1,23 +1,21 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Share2, Heart, Clock } from "lucide-react";
 import ProjectTabs from "@/components/projects/ProjectTabs";
+import ProjectDetailCarousel from "@/components/projects/ProjectDetailCarousel";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   
-  // Mock data or fetch from Prisma if available. For the UI redesign, we'll fetch basic data if it exists.
   const project = await (prisma.project as any).findUnique({
     where: { id: resolvedParams.id },
     include: { images: true, expenses: { orderBy: { date: 'desc' } } }
   });
 
   if (!project) {
-    // If not in DB, for the sake of the redesign UI we can still show a fallback or we just return notFound
     // notFound();
   }
 
@@ -34,22 +32,17 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     expenses: []
   };
 
+  const allImages = (p as any).images?.map((img: any) => img.url) || ["/hero-bg.jpg"];
   const raisedAmount = Number((p as any).raised) || 0;
   const goalAmount = Number(p.goal) > 0 ? Number(p.goal) : 1;
   const progress = Math.min((raisedAmount / goalAmount) * 100, 100);
 
   return (
     <main className="min-h-screen bg-muted/20 pb-24">
-      {/* Cover Image */}
-      <div className="relative w-full h-[50vh] md:h-[60vh] bg-muted">
-        <Image 
-          src={(p as any).images?.[0]?.url || "/herp.png"} 
-          alt={p.name}
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+      {/* Cover Image Carousel */}
+      <div className="relative w-full h-[50vh] md:h-[60vh] bg-black">
+        <ProjectDetailCarousel images={allImages} alt={p.name} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
         
         <div className="absolute bottom-0 left-0 w-full">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">

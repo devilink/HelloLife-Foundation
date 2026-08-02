@@ -14,7 +14,7 @@ export default async function ProjectsPage() {
   try {
     projects = await prisma.project.findMany({
       orderBy: { createdAt: "desc" },
-      include: { images: { take: 1 } }
+      include: { images: true }
     });
   } catch (error) {
     console.error("Projects query error:", error);
@@ -26,7 +26,8 @@ export default async function ProjectsPage() {
     description: p.description,
     district: p.location || "Various",
     goal: p.goal,
-    raised: 0, // In a full app, this would aggregate donations per project
+    raised: (p as any).raised || 0,
+    images: p.images?.map((img: any) => img.url) || [],
     coverImage: p.images[0]?.url || "/hero-bg.jpg",
     status: p.status,
   }));

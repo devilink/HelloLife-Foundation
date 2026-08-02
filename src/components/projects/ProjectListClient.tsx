@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Search, MapPin, Filter } from "lucide-react";
 import { useState } from "react";
+import ImageCarousel from "@/components/ui/ImageCarousel";
 
 interface Project {
   id: string;
@@ -12,6 +13,7 @@ interface Project {
   district: string;
   goal: number;
   raised: number;
+  images?: string[];
   coverImage: string;
   status: string;
 }
@@ -90,10 +92,10 @@ export default function ProjectListClient({ initialProjects }: { initialProjects
       <div className="flex-1">
         {initialProjects.length === 0 ? (
           <div className="bg-card rounded-[2rem] p-16 text-center border border-border shadow-sm">
-            <p className="text-xl text-muted-foreground">No active projects at the moment.</p>
+            <p className="text-xl text-muted-foreground">No projects at the moment.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {initialProjects.map((project, idx) => {
               const progress = Math.min((project.raised / project.goal) * 100, 100);
               
@@ -107,10 +109,10 @@ export default function ProjectListClient({ initialProjects }: { initialProjects
                   className="flex flex-col bg-card rounded-[2rem] border border-border overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group"
                 >
                   <div className="relative h-64 overflow-hidden bg-muted/30 p-2 flex items-center justify-center">
-                    <img 
-                      src={project.coverImage} 
+                    <ImageCarousel
+                      images={project.images && project.images.length > 0 ? project.images : [project.coverImage]}
                       alt={project.name}
-                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 rounded-xl"
+                      className="rounded-xl group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase text-primary shadow-sm border border-border">
                       {project.status}

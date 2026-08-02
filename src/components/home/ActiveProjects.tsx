@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MapPin, ArrowRight } from "lucide-react";
+import ImageCarousel from "@/components/ui/ImageCarousel";
 
 interface Project {
   id: string;
@@ -10,6 +11,7 @@ interface Project {
   district: string;
   goal: number;
   raised: number;
+  images?: string[];
   coverImage: string;
   status: string;
 }
@@ -20,8 +22,8 @@ export default function ActiveProjects({ projects, hideViewAll = false }: { proj
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h3 className="font-extrabold text-2xl md:text-3xl text-slate-900 tracking-tight">Active Relief Projects</h3>
-            <p className="text-slate-500 text-sm md:text-base mt-1">Direct ground initiatives powered by your donations</p>
+            <h3 className="font-extrabold text-2xl md:text-3xl text-slate-900 tracking-tight">Our Relief Projects</h3>
+            <p className="text-slate-500 text-sm md:text-base mt-1">Active and completed ground initiatives powered by your donations</p>
           </div>
           {!hideViewAll && (
             <Link 
@@ -33,19 +35,19 @@ export default function ActiveProjects({ projects, hideViewAll = false }: { proj
           )}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => {
             const progress = Math.min((project.raised / project.goal) * 100, 100);
             
             return (
               <div key={project.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col group">
                 <div className="relative h-64 md:h-72 overflow-hidden bg-slate-100 p-2 flex items-center justify-center">
-                  <img 
-                    src={project.coverImage || "/placeholder.jpg"} 
-                    className="h-full w-full object-contain group-hover:scale-105 transition-transform duration-500 rounded-xl" 
-                    alt={project.name} 
+                  <ImageCarousel
+                    images={project.images && project.images.length > 0 ? project.images : [project.coverImage]}
+                    alt={project.name}
+                    className="rounded-xl group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm uppercase tracking-wider">
+                  <div className={`absolute top-4 right-4 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm uppercase tracking-wider ${project.status === "COMPLETED" ? "bg-blue-600" : "bg-emerald-600"}`}>
                     {project.status || "ACTIVE"}
                   </div>
                 </div>
