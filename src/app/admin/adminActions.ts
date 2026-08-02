@@ -31,13 +31,8 @@ async function requireAdmin() {
   return primaryEmail;
 }
 
-function safeRevalidate(path: string, type?: "layout" | "page") {
+function safeRevalidate(_path: string) {
   try {
-    if (type) {
-      revalidatePath(path, type);
-    } else {
-      revalidatePath(path);
-    }
     revalidatePath("/", "layout");
   } catch (e) {
     console.error("Revalidate path error:", e);
@@ -54,7 +49,7 @@ export async function updateSetting(key: string, value: string) {
       update: { value },
       create: { key, value }
     });
-    safeRevalidate("/", "layout");
+    safeRevalidate("/");
     safeRevalidate("/admin/settings");
     return { success: true };
   } catch (error: any) {
@@ -73,7 +68,7 @@ export async function updateSettingsBulk(settings: Record<string, string>) {
         create: { key, value }
       });
     }
-    safeRevalidate("/", "layout");
+    safeRevalidate("/");
     safeRevalidate("/admin/settings");
     return { success: true };
   } catch (error: any) {
