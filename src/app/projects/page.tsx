@@ -13,7 +13,6 @@ export default async function ProjectsPage() {
   let projects: any[] = [];
   try {
     projects = await prisma.project.findMany({
-      where: { status: "ACTIVE" },
       orderBy: { createdAt: "desc" },
       include: { images: { take: 1 } }
     });

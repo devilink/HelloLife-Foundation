@@ -25,7 +25,30 @@ export default function ProjectFormModal({ onClose }: { onClose: () => void }) {
       const promises = files.map(file => {
         return new Promise<string>((resolve) => {
           const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
+          reader.onloadend = () => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
+              let width = img.width;
+              let height = img.height;
+              const max_size = 1200;
+              
+              if (width > height && width > max_size) {
+                height *= max_size / width;
+                width = max_size;
+              } else if (height > max_size) {
+                width *= max_size / height;
+                height = max_size;
+              }
+              
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
+              ctx?.drawImage(img, 0, 0, width, height);
+              resolve(canvas.toDataURL("image/jpeg", 0.7)); // compress to 70% quality jpeg
+            };
+            img.src = reader.result as string;
+          };
           reader.readAsDataURL(file);
         });
       });

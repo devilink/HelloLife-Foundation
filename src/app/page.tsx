@@ -25,7 +25,6 @@ export default async function Home() {
       prisma.project.count({ where: { status: "COMPLETED" } }),
       prisma.helpRequest.count({ where: { status: "PENDING" } }),
       prisma.project.findMany({
-        where: { status: "ACTIVE" },
         take: 3,
         orderBy: { createdAt: "desc" },
         include: { images: { take: 1 } }
