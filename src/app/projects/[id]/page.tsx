@@ -4,8 +4,31 @@ import Link from "next/link";
 import { MapPin, Share2, Heart, Clock } from "lucide-react";
 import ProjectTabs from "@/components/projects/ProjectTabs";
 import ProjectDetailCarousel from "@/components/projects/ProjectDetailCarousel";
+import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id: resolvedParams.id },
+      select: { name: true, description: true, location: true, images: { take: 1 } },
+    });
+    if (project) {
+      return {
+        title: project.name,
+        description: project.description?.slice(0, 160),
+        openGraph: {
+          title: `${project.name} | Hello Life Foundation`,
+          description: project.description?.slice(0, 160),
+          images: project.images[0]?.url ? [project.images[0].url] : [],
+        },
+      };
+    }
+  } catch (e) {}
+  return { title: "Project Details" };
+}
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;

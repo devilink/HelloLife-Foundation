@@ -372,6 +372,7 @@ export async function addGalleryImage(data: { title: string, category: string, u
       } as any
     });
     safeRevalidate("/admin/gallery");
+    safeRevalidate("/gallery");
     safeRevalidate("/");
     return { success: true };
   } catch (error: any) {
@@ -387,6 +388,7 @@ export async function deleteGalleryImage(id: string) {
       where: { id }
     });
     safeRevalidate("/admin/gallery");
+    safeRevalidate("/gallery");
     safeRevalidate("/");
     return { success: true };
   } catch (error: any) {
