@@ -9,37 +9,48 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  // Fetch real data from Prisma
-  const [
-    dbSettings,
-    activeProjectsCount,
-    completedProjectsCount,
-    pendingRequestsCount,
-    projects,
-    galleries,
-    topDonations,
-    recentDonations
-  ] = await Promise.all([
-    prisma.setting.findMany(),
-    prisma.project.count({ where: { status: "ACTIVE" } }),
-    prisma.project.count({ where: { status: "COMPLETED" } }),
-    prisma.helpRequest.count({ where: { status: "PENDING" } }),
-    prisma.project.findMany({
-      where: { status: "ACTIVE" },
-      take: 3,
-      orderBy: { createdAt: "desc" },
-      include: { images: { take: 1 } }
-    }),
-    (prisma.gallery as any).findMany({ where: { projectId: null }, orderBy: { createdAt: "desc" }, take: 8 }),
-    prisma.donation.findMany({
-      orderBy: { amount: "desc" },
-      take: 5
-    }),
-    prisma.donation.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 5
-    })
-  ]);
+  let dbSettings: any[] = [];
+  let activeProjectsCount = 0;
+  let completedProjectsCount = 0;
+  let pendingRequestsCount = 0;
+  let projects: any[] = [];
+  let galleries: any[] = [];
+  let topDonations: any[] = [];
+  let recentDonations: any[] = [];
+
+  try {
+    const res = await Promise.all([
+      prisma.setting.findMany(),
+      prisma.project.count({ where: { status: "ACTIVE" } }),
+      prisma.project.count({ where: { status: "COMPLETED" } }),
+      prisma.helpRequest.count({ where: { status: "PENDING" } }),
+      prisma.project.findMany({
+        where: { status: "ACTIVE" },
+        take: 3,
+        orderBy: { createdAt: "desc" },
+        include: { images: { take: 1 } }
+      }),
+      (prisma.gallery as any).findMany({ where: { projectId: null }, orderBy: { createdAt: "desc" }, take: 8 }),
+      prisma.donation.findMany({
+        orderBy: { amount: "desc" },
+        take: 5
+      }),
+      prisma.donation.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 5
+      })
+    ]);
+    dbSettings = res[0];
+    activeProjectsCount = res[1];
+    completedProjectsCount = res[2];
+    pendingRequestsCount = res[3];
+    projects = res[4];
+    galleries = res[5];
+    topDonations = res[6];
+    recentDonations = res[7];
+  } catch (error) {
+    console.error("Home page DB query error:", error);
+  }
 
   const settingsMap = dbSettings.reduce((acc, s) => {
     acc[s.key] = s.value;

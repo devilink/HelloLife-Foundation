@@ -10,12 +10,20 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function TransparencyPage() {
-  const [expenses, dbSettings] = await Promise.all([
-    prisma.expense.findMany({
-      orderBy: { date: "desc" }
-    }),
-    prisma.setting.findMany(),
-  ]);
+  let expenses: any[] = [];
+  let dbSettings: any[] = [];
+  try {
+    const res = await Promise.all([
+      prisma.expense.findMany({
+        orderBy: { date: "desc" }
+      }),
+      prisma.setting.findMany(),
+    ]);
+    expenses = res[0];
+    dbSettings = res[1];
+  } catch (error) {
+    console.error("Transparency page DB query error:", error);
+  }
 
   const settingsMap = dbSettings.reduce((acc, s) => {
     acc[s.key] = s.value;

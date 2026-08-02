@@ -10,9 +10,14 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function GalleryPage() {
-  const galleryItems = await prisma.gallery.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  let galleryItems = [];
+  try {
+    galleryItems = await prisma.gallery.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Gallery fetch error:", error);
+  }
 
   return (
     <div className="min-h-screen bg-background">

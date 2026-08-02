@@ -10,12 +10,16 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ProjectsPage() {
-  // Fetch all active projects from the database
-  const projects = await prisma.project.findMany({
-    where: { status: "ACTIVE" },
-    orderBy: { createdAt: "desc" },
-    include: { images: { take: 1 } }
-  });
+  let projects: any[] = [];
+  try {
+    projects = await prisma.project.findMany({
+      where: { status: "ACTIVE" },
+      orderBy: { createdAt: "desc" },
+      include: { images: { take: 1 } }
+    });
+  } catch (error) {
+    console.error("Projects query error:", error);
+  }
 
   const formattedProjects = projects.map(p => ({
     id: p.id,
