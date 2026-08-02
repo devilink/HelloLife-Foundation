@@ -35,7 +35,7 @@ export default async function AdminGalleryPage() {
                   </td>
                 </tr>
               ) : (
-                images.map((img) => (
+                images.map((img: any) => (
                   <tr key={img.id} className="hover:bg-muted/20 transition-colors">
                     <td className="p-4">
                       <div className="relative w-16 h-12 rounded overflow-hidden bg-muted">
