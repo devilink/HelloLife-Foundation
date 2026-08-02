@@ -8,7 +8,7 @@ export default function HeroSection() {
     <div className="relative bg-slate-900 text-white py-36 px-8 text-center min-h-[85vh] flex flex-col items-center justify-center overflow-hidden">
       {/* Background Image with responsive positioning */}
       <img 
-        src="/herp.PNG" 
+        src="/herp.png" 
         alt="Hero Background" 
         className="absolute inset-0 w-full h-full object-cover object-[15%_center] md:object-center"
       />
