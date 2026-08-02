@@ -106,12 +106,13 @@ export default function ProjectListClient({ initialProjects }: { initialProjects
                   transition={{ delay: idx * 0.1, duration: 0.5 }}
                   className="flex flex-col bg-card rounded-[2rem] border border-border overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group"
                 >
-                  <div className="relative h-56 overflow-hidden">
-                    <div 
-                      className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                      style={{ backgroundImage: `url(${project.coverImage})` }}
+                  <div className="relative h-64 overflow-hidden bg-muted/30 p-2 flex items-center justify-center">
+                    <img 
+                      src={project.coverImage} 
+                      alt={project.name}
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 rounded-xl"
                     />
-                    <div className="absolute top-4 right-4 bg-white/90 dark:bg-black/90 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase text-primary shadow-sm">
+                    <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase text-primary shadow-sm border border-border">
                       {project.status}
                     </div>
                   </div>

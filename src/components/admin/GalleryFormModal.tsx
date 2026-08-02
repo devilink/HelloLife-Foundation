@@ -70,10 +70,15 @@ export default function GalleryFormModal({ onClose }: { onClose: () => void }) {
           </div>
           
           <div className="space-y-2">
-            <label className="text-sm font-medium">Category *</label>
-            <select name="category" value={formData.category} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50">
-              {categories.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <label className="text-sm font-medium">Small Description / Subtitle *</label>
+            <input 
+              required 
+              name="category" 
+              value={formData.category} 
+              onChange={handleChange} 
+              placeholder="E.g., Distribution of 500 food kits in Flood Zone A"
+              className="w-full px-4 py-2.5 rounded-xl border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50 text-sm" 
+            />
           </div>
 
           <div className="space-y-2">

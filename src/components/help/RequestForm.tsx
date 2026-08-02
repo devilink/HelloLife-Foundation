@@ -63,15 +63,7 @@ export default function RequestForm() {
         return;
       }
       
-      const validFiles = newFiles.filter(file => {
-        if (file.size > 5 * 1024 * 1024) {
-          alert(`File ${file.name} is too large. Maximum size is 5MB.`);
-          return false;
-        }
-        return true;
-      });
-      
-      setSelectedFiles(prev => [...prev, ...validFiles]);
+      setSelectedFiles(prev => [...prev, ...newFiles]);
     }
   };
 

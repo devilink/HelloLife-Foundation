@@ -47,7 +47,7 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Rec
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50"
             />
-            <p className="text-xs text-muted-foreground">Format as you want it displayed (e.g., "₹1,25,00,000" or "1.25 Cr")</p>
+            <p className="text-xs text-muted-foreground">Format as you want it displayed (e.g., &quot;₹1,25,00,000&quot; or &quot;1.25 Cr&quot;)</p>
           </div>
 
           <div className="space-y-2">
@@ -58,7 +58,7 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Rec
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-input bg-background outline-none focus:ring-2 focus:ring-primary/50"
             />
-            <p className="text-xs text-muted-foreground">Format as you want it displayed (e.g., "₹84,50,000")</p>
+            <p className="text-xs text-muted-foreground">Format as you want it displayed (e.g., &quot;₹84,50,000&quot;)</p>
           </div>
 
           <div className="space-y-2">

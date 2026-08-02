@@ -1,54 +1,56 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { Tag } from "lucide-react";
 
 export default function ImpactGallery({ galleryImages = [] }: { galleryImages?: any[] }) {
-  // Use DB images if available, otherwise fallback to placeholder array if you prefer, or just show nothing if empty.
   const imagesToDisplay = galleryImages.length > 0 
     ? galleryImages 
     : [
-        { id: '1', url: "/gallery/1.jpg", title: "Food Distribution" },
-        { id: '2', url: "/gallery/2.jpg", title: "Medical Camp" },
-        { id: '3', url: "/gallery/3.jpg", title: "Shelter Rebuilding" },
-        { id: '4', url: "/gallery/4.jpg", title: "Rescue Operations" },
+        { id: '1', url: "/gallery/1.jpg", title: "Food Distribution", category: "Food & Supplies" },
+        { id: '2', url: "/gallery/2.jpg", title: "Medical Relief Camp", category: "Healthcare" },
+        { id: '3', url: "/gallery/3.jpg", title: "Shelter Rebuilding", category: "Relief Work" },
+        { id: '4', url: "/gallery/4.jpg", title: "Ground Rescue Operations", category: "Emergency Response" },
       ];
 
   return (
-    <section className="py-24 bg-background overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+    <section className="py-20 bg-slate-50/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <div className="text-center">
-          <h2 className="text-4xl font-extrabold mb-4 tracking-tight text-foreground">Impact in Action</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
-            Witness the real-world impact of your contributions through our on-ground operations.
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight text-slate-900">Impact in Action</h2>
+          <p className="text-slate-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            Witness the real-world impact of your contributions through our ground operations.
           </p>
         </div>
       </div>
 
-      {/* Full width gallery with scrolling or grid */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {imagesToDisplay.map((img, idx) => (
             <motion.div
               key={img.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: (idx % 4) * 0.1, duration: 0.6 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-lg shadow-black/5 break-inside-avoid"
+              transition={{ delay: (idx % 4) * 0.1, duration: 0.5 }}
+              className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col group"
             >
-              <img 
-                src={img.url || img.src} 
-                alt={img.title || "Impact Image"}
-                className="w-full h-auto object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
-                style={{ backgroundColor: `var(--chart-${(idx % 5) + 1})` }}
-              />
+              <div className="relative h-64 w-full overflow-hidden bg-slate-100 p-2 flex items-center justify-center">
+                <img 
+                  src={img.url || img.src} 
+                  alt={img.title || "Impact Image"}
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 rounded-xl"
+                />
+              </div>
               
-              {/* Subtle hover overlay with title */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                <div className="p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  <h3 className="text-white text-lg font-bold tracking-wide">{img.title}</h3>
-                  {img.category && <p className="text-emerald-400 text-sm font-medium mt-1">{img.category}</p>}
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 line-clamp-1 leading-snug">{img.title}</h3>
+                  {img.category && (
+                    <p className="text-slate-500 text-xs mt-1.5 line-clamp-2 leading-relaxed font-normal">
+                      {img.category}
+                    </p>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -58,3 +60,4 @@ export default function ImpactGallery({ galleryImages = [] }: { galleryImages?: 
     </section>
   );
 }
+

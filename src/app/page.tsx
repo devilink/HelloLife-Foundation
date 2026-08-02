@@ -14,7 +14,9 @@ export default async function Home() {
     completedProjectsCount,
     pendingRequestsCount,
     projects,
-    galleries
+    galleries,
+    topDonations,
+    recentDonations
   ] = await Promise.all([
     prisma.setting.findMany(),
     prisma.project.count({ where: { status: "ACTIVE" } }),
@@ -26,7 +28,15 @@ export default async function Home() {
       orderBy: { createdAt: "desc" },
       include: { images: { take: 1 } }
     }),
-    (prisma.gallery as any).findMany({ where: { projectId: null }, orderBy: { createdAt: "desc" }, take: 8 })
+    (prisma.gallery as any).findMany({ where: { projectId: null }, orderBy: { createdAt: "desc" }, take: 8 }),
+    prisma.donation.findMany({
+      orderBy: { amount: "desc" },
+      take: 5
+    }),
+    prisma.donation.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5
+    })
   ]);
 
   const settingsMap = dbSettings.reduce((acc, s) => {
@@ -53,7 +63,7 @@ export default async function Home() {
     description: p.description,
     district: p.location || "Various",
     goal: p.goal,
-    raised: (p as any).raised || 0, // Fallback if raised is null, but we just added it to the DB schema
+    raised: (p as any).raised || 0, // Fallback if raised is null
     coverImage: p.images[0]?.url || "/hero-bg.jpg",
     status: p.status,
   }));
@@ -63,7 +73,9 @@ export default async function Home() {
       <HeroSection />
       <TransparencyStats stats={stats} />
       <ActiveProjects projects={formattedProjects} />
-      {settingsMap.showTopDonors !== "false" && <TopDonors />}
+      {settingsMap.showTopDonors !== "false" && (
+        <TopDonors topDonors={topDonations} recentDonors={recentDonations} />
+      )}
       <SupportSection />
 
       {/* Impact in Action (Conditional) */}
