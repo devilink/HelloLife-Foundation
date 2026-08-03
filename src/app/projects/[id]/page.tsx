@@ -8,7 +8,6 @@ import ProjectDetailCarousel from "@/components/projects/ProjectDetailCarousel";
 import ShareButton from "@/components/projects/ShareButton";
 import type { Metadata } from "next";
 
-export const revalidate = 60;
 
 export async function generateStaticParams() {
   const projects = await getAllProjectIds();

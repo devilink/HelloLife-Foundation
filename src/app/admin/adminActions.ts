@@ -49,6 +49,7 @@ function globalRevalidate() {
     revalidateTag("gallery-data");
     revalidateTag("project-by-id");
     revalidateTag("all-project-ids");
+    revalidateTag("settings");
   } catch(e) {
     console.error("Revalidate tag error:", e);
   }

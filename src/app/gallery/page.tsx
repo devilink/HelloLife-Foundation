@@ -9,7 +9,6 @@ export const metadata: Metadata = {
   description: "View the impact of your donations through photos and videos of our relief operations.",
 };
 
-export const revalidate = 60;
 
 export default async function GalleryPage() {
   const galleryItems = await getGalleryData();

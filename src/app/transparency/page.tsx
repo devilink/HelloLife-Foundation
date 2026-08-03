@@ -9,7 +9,6 @@ export const metadata: Metadata = {
   description: "View our financial summary and searchable expense ledger. 100% transparent operations.",
 };
 
-export const revalidate = 60;
 
 export default async function TransparencyPage() {
   const { expenses, dbSettings } = await getTransparencyData();
