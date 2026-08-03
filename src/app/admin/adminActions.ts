@@ -42,6 +42,16 @@ function safeRevalidate(path: string, type?: "page" | "layout") {
 // Global revalidate function for all admin actions to ensure absolute freshness
 function globalRevalidate() {
   safeRevalidate("/", "layout");
+  try {
+    revalidateTag("home-data");
+    revalidateTag("projects-data");
+    revalidateTag("transparency-data");
+    revalidateTag("gallery-data");
+    revalidateTag("project-by-id");
+    revalidateTag("all-project-ids");
+  } catch(e) {
+    console.error("Revalidate tag error:", e);
+  }
 }
 
 // ----------------- SETTINGS -----------------

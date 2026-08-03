@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ImpactGallery from "@/components/home/ImpactGallery";
+import Image from "next/image";
 
 export default function ProjectTabs({ project }: { project: any }) {
   const [activeTab, setActiveTab] = useState("overview");
@@ -52,7 +53,7 @@ export default function ProjectTabs({ project }: { project: any }) {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {/* Displaying project specific images if they exist, else placeholder */}
             {project.images?.slice(1).map((img: any, i: number) => (
-              <img key={i} src={img.url} className="rounded-xl w-full h-48 object-cover" />
+              <Image key={i} src={img.url} alt="Gallery Image" width={400} height={300} className="rounded-xl w-full h-48 object-cover" />
             ))}
             {(!project.images || project.images.length <= 1) && (
               <div className="col-span-2 md:col-span-3 p-8 border-2 border-dashed border-border rounded-xl text-center text-muted-foreground">

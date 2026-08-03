@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { updateProject, deleteProjectImage } from "@/app/admin/adminActions";
 import { X, Loader2, Upload, Trash2 } from "lucide-react";
+import Image from "next/image";
 
 export default function EditProjectModal({ 
   project, 
@@ -38,7 +39,7 @@ export default function EditProjectModal({
         return new Promise<string>((resolve) => {
           const reader = new FileReader();
           reader.onloadend = () => {
-            const img = new Image();
+            const img = new window.Image();
             img.onload = () => {
               const canvas = document.createElement("canvas");
               let width = img.width;
@@ -168,7 +169,7 @@ export default function EditProjectModal({
               <div className="grid grid-cols-4 gap-3">
                 {existingImages.map((img: any) => (
                   <div key={img.id} className="relative group rounded-xl overflow-hidden border border-border bg-muted/30 aspect-square">
-                    <img src={img.url} alt="Project image" className="w-full h-full object-cover" />
+                    <Image src={img.url} alt="Project image" width={200} height={200} className="w-full h-full object-cover" />
                     <button
                       type="button"
                       onClick={() => handleDeleteImage(img.id)}

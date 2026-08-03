@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Copy, Download, CheckCircle2, Heart, Landmark, QrCode, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export default function DonateClient() {
@@ -48,9 +49,11 @@ export default function DonateClient() {
           <h2 className="text-3xl font-extrabold mb-8 text-foreground">Donate via UPI</h2>
           
           <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 mb-8 transition-transform duration-500 group-hover:scale-105">
-            <img 
+            <Image 
               src="/QR code.jpeg" 
-              alt="UPI QR Code" 
+              alt="UPI QR Code"
+              width={224}
+              height={224} 
               className="w-56 h-56 object-contain"
             />
           </div>
