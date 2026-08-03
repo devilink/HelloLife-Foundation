@@ -6,51 +6,27 @@ import ImpactGallery from "@/components/home/ImpactGallery";
 import TopDonors from "@/components/home/TopDonors";
 import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/lib/settings";
-
+import { getHomePageData } from "@/lib/data";
 export const revalidate = 60;
 
 export default async function Home() {
   let settingsMap: Record<string, string> = {};
-  let activeProjectsCount = 0;
-  let completedProjectsCount = 0;
-  let pendingRequestsCount = 0;
-  let projects: any[] = [];
-  let galleries: any[] = [];
-  let topDonations: any[] = [];
-  let recentDonations: any[] = [];
+  
+  const [settings, homeData] = await Promise.all([
+    getSettings(),
+    getHomePageData(),
+  ]);
 
-  try {
-    const res = await Promise.all([
-      getSettings(),
-      prisma.project.count({ where: { status: "ACTIVE" } }),
-      prisma.project.count({ where: { status: "COMPLETED" } }),
-      prisma.helpRequest.count({ where: { status: "PENDING" } }),
-      prisma.project.findMany({
-        take: 6,
-        orderBy: { createdAt: "desc" },
-        include: { images: true }
-      }),
-      (prisma.gallery as any).findMany({ where: { projectId: null }, orderBy: { createdAt: "desc" }, take: 8 }),
-      prisma.donation.findMany({
-        orderBy: { amount: "desc" },
-        take: 5
-      }),
-      prisma.donation.findMany({
-        orderBy: { createdAt: "desc" },
-        take: 5
-      })
-    ]);
-    settingsMap = res[0] as Record<string, string>;
-    activeProjectsCount = res[1] as number;
-    completedProjectsCount = res[2] as number;
-    pendingRequestsCount = res[3] as number;
-    projects = res[4] as any[];
-    galleries = res[5] as any[];
-    topDonations = res[6] as any[];
-    recentDonations = res[7] as any[];
-  } catch (error) {
-    console.error("Home page DB query error:", error);
-  }
+  settingsMap = settings as Record<string, string>;
+  const {
+    activeProjectsCount,
+    completedProjectsCount,
+    pendingRequestsCount,
+    projects,
+    galleries,
+    topDonations,
+    recentDonations,
+  } = homeData;
 
   const stats = {
     totalRaised: settingsMap.totalRaised || "0",

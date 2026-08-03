@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import ProjectListClient from "@/components/projects/ProjectListClient";
 
+import { getProjectsData } from "@/lib/data";
+
 export const metadata: Metadata = {
   title: "Active Relief Projects | Hello Life Foundation",
   description: "Explore our ongoing operations and relief projects. See where your donations are making an impact.",
@@ -10,15 +12,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function ProjectsPage() {
-  let projects: any[] = [];
-  try {
-    projects = await prisma.project.findMany({
-      orderBy: { createdAt: "desc" },
-      include: { images: true }
-    });
-  } catch (error) {
-    console.error("Projects query error:", error);
-  }
+  const projects = await getProjectsData();
 
   const formattedProjects = projects.map(p => ({
     id: p.id,

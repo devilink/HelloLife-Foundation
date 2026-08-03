@@ -2,6 +2,8 @@ import TransparencyDashboard from "@/components/transparency/TransparencyDashboa
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 
+import { getTransparencyData } from "@/lib/data";
+
 export const metadata: Metadata = {
   title: "Financial Dashboard | Hello Life Foundation",
   description: "View our financial summary and searchable expense ledger. 100% transparent operations.",
@@ -10,20 +12,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function TransparencyPage() {
-  let expenses: any[] = [];
-  let dbSettings: any[] = [];
-  try {
-    const res = await Promise.all([
-      prisma.expense.findMany({
-        orderBy: { date: "desc" }
-      }),
-      prisma.setting.findMany(),
-    ]);
-    expenses = res[0];
-    dbSettings = res[1];
-  } catch (error) {
-    console.error("Transparency page DB query error:", error);
-  }
+  const { expenses, dbSettings } = await getTransparencyData();
 
   const settingsMap = dbSettings.reduce((acc, s) => {
     acc[s.key] = s.value;

@@ -11,6 +11,7 @@ const inter = Inter({
 });
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const revalidate = 60;
 
@@ -129,6 +130,7 @@ export default async function RootLayout({
             {children}
           </main>
           <Footer />
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>
