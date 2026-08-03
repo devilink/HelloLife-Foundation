@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 
 interface ImageCarouselProps {
   images: string[];
@@ -14,21 +15,29 @@ export default function ImageCarousel({ images, alt, className = "" }: ImageCaro
 
   if (!images || images.length === 0) {
     return (
-      <img
-        src="/hero-bg.jpg"
-        alt={alt}
-        className={`w-full h-full object-contain ${className}`}
-      />
+      <div className={`relative w-full h-full ${className}`}>
+        <Image
+          src="/hero-bg.jpg"
+          alt={alt}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-contain"
+        />
+      </div>
     );
   }
 
   if (images.length === 1) {
     return (
-      <img
-        src={images[0]}
-        alt={alt}
-        className={`w-full h-full object-contain ${className}`}
-      />
+      <div className={`relative w-full h-full ${className}`}>
+        <Image
+          src={images[0]}
+          alt={alt}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-contain"
+        />
+      </div>
     );
   }
 
@@ -46,10 +55,12 @@ export default function ImageCarousel({ images, alt, className = "" }: ImageCaro
 
   return (
     <div className="relative w-full h-full group/carousel">
-      <img
+      <Image
         src={images[currentIndex]}
         alt={`${alt} - ${currentIndex + 1}`}
-        className={`w-full h-full object-contain transition-opacity duration-300 ${className}`}
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        className={`object-contain transition-opacity duration-300 ${className}`}
       />
 
       {/* Left Arrow */}

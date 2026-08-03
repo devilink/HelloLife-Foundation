@@ -106,3 +106,34 @@ export const getGalleryData = unstable_cache(
   ["gallery-data"],
   { revalidate: 60, tags: ["galleries"] }
 );
+
+export const getProjectById = unstable_cache(
+  async (id: string) => {
+    try {
+      return await (prisma.project as any).findUnique({
+        where: { id },
+        include: { images: true, expenses: { orderBy: { date: 'desc' } } }
+      });
+    } catch (error) {
+      console.error("Project fetch error:", error);
+      return null;
+    }
+  },
+  ["project-details"],
+  { revalidate: 60, tags: ["projects", "expenses"] }
+);
+
+export const getAllProjectIds = unstable_cache(
+  async () => {
+    try {
+      return await prisma.project.findMany({
+        select: { id: true }
+      });
+    } catch (error) {
+      console.error("Project IDs fetch error:", error);
+      return [];
+    }
+  },
+  ["all-project-ids"],
+  { revalidate: 3600, tags: ["projects"] }
+);

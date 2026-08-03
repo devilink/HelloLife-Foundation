@@ -1,20 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Heart, ShieldCheck, HeartHandshake, FolderOpen } from "lucide-react";
 
 export default function HeroSection() {
   return (
     <div className="relative bg-slate-900 text-white py-36 px-4 sm:px-6 lg:px-8 text-center md:text-left min-h-[85vh] flex flex-col justify-center overflow-hidden">
-      {/* Background Image with responsive positioning */}
-      <div 
-        className="absolute inset-0 w-full h-full bg-cover bg-[15%_center] md:bg-[60%_center]"
-        style={{ backgroundImage: "url('/herp.png')" }}
-        aria-hidden="true"
+      {/* Background Image optimized by Next.js */}
+      <Image
+        src="/herp.png"
+        alt="Hello Life Foundation Hero Background"
+        fill
+        priority
+        className="absolute inset-0 object-cover object-[15%_center] md:object-[60%_center] opacity-100 z-0"
+        sizes="100vw"
       />
       {/* Extremely Light Gradient Overlay for subtle contrast */}
-      <div className="absolute inset-0 bg-slate-900/20 md:bg-transparent md:bg-gradient-to-r md:from-slate-900/50 md:via-slate-900/10 md:to-transparent" />
-      <div className="relative z-10 max-w-7xl w-full mx-auto flex flex-col items-center md:items-start justify-center">
+      <div className="absolute inset-0 bg-slate-900/40 md:bg-transparent md:bg-gradient-to-r md:from-slate-900/60 md:via-slate-900/20 md:to-transparent z-10" />
+      <div className="relative z-20 max-w-7xl w-full mx-auto flex flex-col items-center md:items-start justify-center">
         <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight leading-tight max-w-3xl">
           Together We Can <br className="hidden md:block" />
           <span className="text-emerald-400">Change Lives</span>

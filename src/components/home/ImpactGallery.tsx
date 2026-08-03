@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Tag } from "lucide-react";
+import Image from "next/image";
 
 export default function ImpactGallery({ galleryImages = [] }: { galleryImages?: any[] }) {
   const imagesToDisplay = galleryImages.length > 0 
@@ -36,10 +37,12 @@ export default function ImpactGallery({ galleryImages = [] }: { galleryImages?: 
               className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col group"
             >
               <div className="relative h-64 w-full overflow-hidden bg-slate-100 p-2 flex items-center justify-center">
-                <img 
+                <Image 
                   src={img.url || img.src} 
                   alt={img.title || "Impact Image"}
-                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 rounded-xl"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-contain group-hover:scale-105 transition-transform duration-500 rounded-xl"
                 />
               </div>
               

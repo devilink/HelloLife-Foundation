@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getProjectById, getAllProjectIds } from "@/lib/data";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MapPin, Share2, Heart, Clock } from "lucide-react";
@@ -8,13 +9,17 @@ import type { Metadata } from "next";
 
 export const revalidate = 60;
 
+export async function generateStaticParams() {
+  const projects = await getAllProjectIds();
+  return projects.map((project) => ({
+    id: project.id,
+  }));
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
   try {
-    const project = await prisma.project.findUnique({
-      where: { id: resolvedParams.id },
-      select: { name: true, description: true, location: true, images: { take: 1 } },
-    });
+    const project = await getProjectById(resolvedParams.id);
     if (project) {
       return {
         title: project.name,
@@ -22,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         openGraph: {
           title: `${project.name} | Hello Life Foundation`,
           description: project.description?.slice(0, 160),
-          images: project.images[0]?.url ? [project.images[0].url] : [],
+          images: project.images && project.images[0]?.url ? [project.images[0].url] : [],
         },
       };
     }
@@ -33,10 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   
-  const project = await (prisma.project as any).findUnique({
-    where: { id: resolvedParams.id },
-    include: { images: true, expenses: { orderBy: { date: 'desc' } } }
-  });
+  const project = await getProjectById(resolvedParams.id);
 
   if (!project) {
     // notFound();
