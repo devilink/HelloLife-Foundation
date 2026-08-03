@@ -31,9 +31,9 @@ async function requireAdmin() {
   return primaryEmail;
 }
 
-function safeRevalidate(_path: string) {
+function safeRevalidate(path: string) {
   try {
-    revalidatePath("/", "layout");
+    revalidatePath(path);
   } catch (e) {
     console.error("Revalidate path error:", e);
   }
@@ -268,6 +268,7 @@ export async function verifyDonation(confirmationId: string) {
 
     safeRevalidate("/admin/donations");
     safeRevalidate("/transparency");
+    safeRevalidate("/");
     return { success: true };
   } catch (error: any) {
     console.error("verifyDonation error:", error);
@@ -308,6 +309,7 @@ export async function addOfflineDonation(data: { donorName: string, amount: numb
 
     safeRevalidate("/admin/donations");
     safeRevalidate("/transparency");
+    safeRevalidate("/");
     return { success: true };
   } catch (error: any) {
     console.error("addOfflineDonation error:", error);
@@ -466,6 +468,7 @@ export async function updateDonation(id: string, data: { donorName: string, anon
     });
     safeRevalidate("/admin/donations");
     safeRevalidate("/transparency");
+    safeRevalidate("/");
     return { success: true };
   } catch (error: any) {
     console.error("updateDonation error:", error);
@@ -481,6 +484,7 @@ export async function deleteDonationLedgerEntry(id: string) {
     });
     safeRevalidate("/admin/donations");
     safeRevalidate("/transparency");
+    safeRevalidate("/");
     return { success: true };
   } catch (error: any) {
     console.error("deleteDonationLedgerEntry error:", error);

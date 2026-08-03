@@ -18,9 +18,9 @@ export default function ImpactGallery({ galleryImages = [] }: { galleryImages?: 
     <section className="py-20 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <div className="text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight text-slate-900">Impact in Action</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight text-slate-900">Our Works</h2>
           <p className="text-slate-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-            Witness the real-world impact of your contributions through our ground operations.
+            See how we make a difference on the ground.
           </p>
         </div>
       </div>

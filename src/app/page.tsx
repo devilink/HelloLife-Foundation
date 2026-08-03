@@ -7,8 +7,7 @@ import TopDonors from "@/components/home/TopDonors";
 import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/lib/settings";
 import { getHomePageData } from "@/lib/data";
-export const revalidate = 60;
-
+export const dynamic = 'force-dynamic';
 export default async function Home() {
   let settingsMap: Record<string, string> = {};
   
