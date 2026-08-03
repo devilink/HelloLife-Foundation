@@ -5,6 +5,7 @@ import Link from "next/link";
 import { MapPin, Share2, Heart, Clock } from "lucide-react";
 import ProjectTabs from "@/components/projects/ProjectTabs";
 import ProjectDetailCarousel from "@/components/projects/ProjectDetailCarousel";
+import ShareButton from "@/components/projects/ShareButton";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -130,9 +131,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                       <Heart className="w-5 h-5" /> Back this Project
                     </button>
                   </Link>
-                  <button className="w-full py-4 rounded-2xl border-2 border-border text-foreground font-bold hover:bg-muted transition-colors flex items-center justify-center gap-2">
-                    <Share2 className="w-5 h-5" /> Share
-                  </button>
+                  <ShareButton title={p.name} text={p.description || ""} />
                 </div>
                 
               </div>
