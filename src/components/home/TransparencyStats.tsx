@@ -27,7 +27,7 @@ export default function TransparencyStats({ stats }: { stats: StatsProps }) {
         
         <div className="flex flex-col items-center">
           <div className="text-sky-500 bg-sky-50 p-4 rounded-full mb-4"><FolderOpen className="w-8 h-8 md:w-10 md:h-10" /></div>
-          <div className="font-extrabold text-2xl md:text-3xl text-slate-800">{Number(stats.activeProjects) + Number(stats.completedProjects)}</div>
+          <div className="font-extrabold text-2xl md:text-3xl text-slate-800">{stats.activeProjects}</div>
           <div className="text-xs md:text-sm text-slate-500 uppercase tracking-widest font-bold mt-2">Active Projects</div>
         </div>
         

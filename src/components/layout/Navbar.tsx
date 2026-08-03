@@ -51,6 +51,7 @@ export default function Navbar({ navSettings = {} }: { navSettings?: Record<stri
             <div className="flex items-center gap-4">
               <Link
                 href="/admin"
+                prefetch={false}
                 className="text-sm font-medium text-gray-500 hover:text-emerald-600 transition-colors"
               >
                 Admin
@@ -98,6 +99,7 @@ export default function Navbar({ navSettings = {} }: { navSettings?: Record<stri
             <div className="flex flex-col gap-3 mt-6">
               <Link
                 href="/admin"
+                prefetch={false}
                 onClick={() => setIsOpen(false)}
                 className="block px-4 py-3 text-center rounded-2xl border border-gray-200 text-gray-700 font-medium"
               >

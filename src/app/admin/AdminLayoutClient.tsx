@@ -52,6 +52,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
             <Link
               key={item.name}
               href={item.href}
+              prefetch={false}
               className={cn(
                 "flex items-center gap-3 px-3 py-3 rounded-xl font-medium transition-all group overflow-hidden whitespace-nowrap",
                 pathname === item.href 

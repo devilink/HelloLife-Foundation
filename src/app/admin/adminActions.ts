@@ -31,12 +31,17 @@ async function requireAdmin() {
   return primaryEmail;
 }
 
-function safeRevalidate(path: string) {
+function safeRevalidate(path: string, type?: "page" | "layout") {
   try {
-    revalidatePath(path);
+    revalidatePath(path, type);
   } catch (e) {
     console.error("Revalidate path error:", e);
   }
+}
+
+// Global revalidate function for all admin actions to ensure absolute freshness
+function globalRevalidate() {
+  safeRevalidate("/", "layout");
 }
 
 // ----------------- SETTINGS -----------------
@@ -49,9 +54,7 @@ export async function updateSetting(key: string, value: string) {
       update: { value },
       create: { key, value }
     });
-    revalidateTag("settings");
-    safeRevalidate("/");
-    safeRevalidate("/admin/settings");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("updateSetting error:", error);
@@ -69,9 +72,7 @@ export async function updateSettingsBulk(settings: Record<string, string>) {
         create: { key, value }
       });
     }
-    revalidateTag("settings");
-    safeRevalidate("/");
-    safeRevalidate("/admin/settings");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("updateSettingsBulk error:", error);
@@ -88,8 +89,7 @@ export async function updateRequestStatus(id: string, status: any) {
       where: { id },
       data: { status }
     });
-    safeRevalidate("/admin/requests");
-    safeRevalidate("/admin");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("updateRequestStatus error:", error);
@@ -103,8 +103,7 @@ export async function deleteHelpRequest(id: string) {
     await prisma.helpRequest.delete({
       where: { id }
     });
-    safeRevalidate("/admin/requests");
-    safeRevalidate("/admin");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("deleteHelpRequest error:", error);
@@ -136,8 +135,7 @@ export async function createProject(data: { name: string, description: string, g
       });
     }
 
-    safeRevalidate("/admin/projects");
-    safeRevalidate("/projects");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("createProject error:", error);
@@ -171,10 +169,7 @@ export async function updateProject(id: string, data: { name: string, descriptio
       });
     }
 
-    safeRevalidate("/admin/projects");
-    safeRevalidate("/projects");
-    safeRevalidate(`/projects/${id}`);
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("updateProject error:", error);
@@ -189,10 +184,7 @@ export async function updateProjectStatus(id: string, status: any) {
       where: { id },
       data: { status }
     });
-    safeRevalidate("/admin/projects");
-    safeRevalidate("/projects");
-    safeRevalidate(`/projects/${id}`);
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("updateProjectStatus error:", error);
@@ -206,10 +198,7 @@ export async function deleteProjectImage(imageId: string, projectId: string) {
     await prisma.projectImage.delete({
       where: { id: imageId }
     });
-    safeRevalidate("/admin/projects");
-    safeRevalidate("/projects");
-    safeRevalidate(`/projects/${projectId}`);
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("deleteProjectImage error:", error);
@@ -223,9 +212,7 @@ export async function deleteProject(id: string) {
     await prisma.project.delete({
       where: { id }
     });
-    safeRevalidate("/admin/projects");
-    safeRevalidate("/projects");
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("deleteProject error:", error);
@@ -266,9 +253,7 @@ export async function verifyDonation(confirmationId: string) {
       }
     });
 
-    safeRevalidate("/admin/donations");
-    safeRevalidate("/transparency");
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("verifyDonation error:", error);
@@ -283,7 +268,7 @@ export async function rejectDonationConfirmation(confirmationId: string) {
       where: { id: confirmationId },
       data: { status: "REJECTED" }
     });
-    safeRevalidate("/admin/donations");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("rejectDonationConfirmation error:", error);
@@ -307,9 +292,7 @@ export async function addOfflineDonation(data: { donorName: string, amount: numb
       }
     });
 
-    safeRevalidate("/admin/donations");
-    safeRevalidate("/transparency");
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("addOfflineDonation error:", error);
@@ -337,8 +320,7 @@ export async function addExpense(data: { title: string, category: string, amount
       } as any
     });
 
-    safeRevalidate("/admin/expenses");
-    safeRevalidate("/transparency");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("addExpense error:", error);
@@ -352,8 +334,7 @@ export async function deleteExpense(id: string) {
     await prisma.expense.delete({
       where: { id }
     });
-    safeRevalidate("/admin/expenses");
-    safeRevalidate("/transparency");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("deleteExpense error:", error);
@@ -375,9 +356,7 @@ export async function addGalleryImage(data: { title: string, category: string, u
         projectId: data.projectId || null
       } as any
     });
-    safeRevalidate("/admin/gallery");
-    safeRevalidate("/gallery");
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("addGalleryImage error:", error);
@@ -391,9 +370,7 @@ export async function deleteGalleryImage(id: string) {
     await prisma.gallery.delete({
       where: { id }
     });
-    safeRevalidate("/admin/gallery");
-    safeRevalidate("/gallery");
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("deleteGalleryImage error:", error);
@@ -413,7 +390,7 @@ export async function addVolunteer(data: { fullName: string, phoneNumber: string
         completedTasks: 0
       }
     });
-    safeRevalidate("/admin/volunteers");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("addVolunteer error:", error);
@@ -428,7 +405,7 @@ export async function updateVolunteer(id: string, data: { fullName: string, phon
       where: { id },
       data
     });
-    safeRevalidate("/admin/volunteers");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("updateVolunteer error:", error);
@@ -442,7 +419,7 @@ export async function deleteVolunteer(id: string) {
     await prisma.volunteer.delete({
       where: { id }
     });
-    safeRevalidate("/admin/volunteers");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("deleteVolunteer error:", error);
@@ -466,9 +443,7 @@ export async function updateDonation(id: string, data: { donorName: string, anon
         transactionId: data.transactionId
       }
     });
-    safeRevalidate("/admin/donations");
-    safeRevalidate("/transparency");
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("updateDonation error:", error);
@@ -482,9 +457,7 @@ export async function deleteDonationLedgerEntry(id: string) {
     await prisma.donation.delete({
       where: { id }
     });
-    safeRevalidate("/admin/donations");
-    safeRevalidate("/transparency");
-    safeRevalidate("/");
+    globalRevalidate();
     return { success: true };
   } catch (error: any) {
     console.error("deleteDonationLedgerEntry error:", error);
