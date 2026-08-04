@@ -19,7 +19,7 @@ export const getHomePageData = unstable_cache(
             goal: true,
             raised: true,
             status: true,
-            images: { select: { url: true } },
+            images: { take: 1, select: { url: true } },
           },
         }),
         (prisma as any).gallery.findMany({
@@ -96,7 +96,7 @@ export const getProjectsData = unstable_cache(
           goal: true,
           raised: true,
           status: true,
-          images: { select: { url: true } },
+          images: { take: 1, select: { url: true } },
         },
       });
     } catch (error) {

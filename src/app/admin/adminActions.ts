@@ -3,6 +3,23 @@
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { put } from "@vercel/blob";
+
+async function uploadBase64IfNeeded(base64Str: string): Promise<string> {
+  if (base64Str.startsWith("data:image/")) {
+    const matches = base64Str.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      return base64Str;
+    }
+    const type = matches[1];
+    const buffer = Buffer.from(matches[2], "base64");
+    const ext = type.split("/")[1] || "jpeg";
+    const filename = `upload-${Date.now()}.${ext}`;
+    const blob = await put(filename, buffer, { access: "public" });
+    return blob.url;
+  }
+  return base64Str;
+}
 
 async function requireAdmin() {
   let primaryEmail = "admin@hellolife.org";
@@ -138,8 +155,11 @@ export async function createProject(data: { name: string, description: string, g
     });
 
     if (data.images && data.images.length > 0) {
+      const uploadedImages = await Promise.all(
+        data.images.map((img) => uploadBase64IfNeeded(img))
+      );
       await prisma.projectImage.createMany({
-        data: data.images.map(img => ({
+        data: uploadedImages.map(img => ({
           url: img,
           projectId: project.id
         }))
@@ -172,8 +192,11 @@ export async function updateProject(id: string, data: { name: string, descriptio
     });
 
     if (data.images && data.images.length > 0) {
+      const uploadedImages = await Promise.all(
+        data.images.map((img) => uploadBase64IfNeeded(img))
+      );
       await prisma.projectImage.createMany({
-        data: data.images.map(img => ({
+        data: uploadedImages.map(img => ({
           url: img,
           projectId: id
         }))
@@ -358,11 +381,12 @@ export async function deleteExpense(id: string) {
 export async function addGalleryImage(data: { title: string, category: string, url: string, type: string, projectId?: string }) {
   try {
     await requireAdmin();
+    const uploadedUrl = await uploadBase64IfNeeded(data.url);
     await prisma.gallery.create({
       data: {
         title: data.title,
         category: data.category,
-        url: data.url,
+        url: uploadedUrl,
         type: data.type || "IMAGE",
         projectId: data.projectId || null
       } as any
