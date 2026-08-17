@@ -9,13 +9,6 @@ import ShareButton from "@/components/projects/ShareButton";
 import type { Metadata } from "next";
 
 
-export async function generateStaticParams() {
-  const projects = await getAllProjectIds();
-  return projects.map((project) => ({
-    id: project.id,
-  }));
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
   try {
