@@ -91,7 +91,7 @@ export default function VolunteerForm() {
               <input 
                 {...register("fullName")}
                 className={cn("w-full px-4 py-3 rounded-xl border bg-background focus:ring-2 focus:ring-primary/50 outline-none transition-all", errors.fullName ? "border-destructive" : "border-input")} 
-                placeholder="John Doe" 
+                placeholder="Your Full Name" 
               />
               {errors.fullName && <p className="text-destructive text-sm">{errors.fullName.message}</p>}
             </div>

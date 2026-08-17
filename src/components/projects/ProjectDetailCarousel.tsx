@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 
 interface ProjectDetailCarouselProps {
   images: string[];
@@ -18,10 +19,13 @@ export default function ProjectDetailCarousel({ images, alt }: ProjectDetailCaro
 
   return (
     <div className="absolute inset-0 w-full h-full group/carousel">
-      <img
+      <Image
         src={images[currentIndex]}
         alt={`${alt} - ${currentIndex + 1}`}
-        className="w-full h-full object-contain transition-opacity duration-300"
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 60vw"
+        priority={currentIndex === 0}
+        className="object-contain transition-opacity duration-300"
       />
 
       {images.length > 1 && (

@@ -77,6 +77,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: BASE_URL,
   },
+  icons: {
+    icon: "/logoss.png",
+    shortcut: "/logoss.png",
+    apple: "/logoss.png",
+  },
 };
 
 // JSON-LD Structured Data for Google Rich Results
