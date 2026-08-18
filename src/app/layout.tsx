@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getSettings } from "@/lib/settings";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -127,6 +128,7 @@ export default async function RootLayout({
           />
         </head>
         <body className="min-h-full flex flex-col font-sans">
+          <NextTopLoader color="#0ea5e9" showSpinner={false} />
           <Navbar navSettings={settingsMap} />
           <main className="flex-1 pt-[72px]">
             {children}
