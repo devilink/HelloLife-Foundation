@@ -60,13 +60,13 @@ function safeRevalidate(path: string, type?: "page" | "layout") {
 function globalRevalidate() {
   safeRevalidate("/", "layout");
   try {
-    revalidateTag("home-data");
-    revalidateTag("projects-data");
-    revalidateTag("transparency-data");
-    revalidateTag("gallery-data");
-    revalidateTag("project-by-id");
-    revalidateTag("all-project-ids");
-    revalidateTag("settings");
+    revalidateTag("home-data", "max");
+    revalidateTag("projects-data", "max");
+    revalidateTag("transparency-data", "max");
+    revalidateTag("gallery-data", "max");
+    revalidateTag("project-by-id", "max");
+    revalidateTag("all-project-ids", "max");
+    revalidateTag("settings", "max");
   } catch(e) {
     console.error("Revalidate tag error:", e);
   }
